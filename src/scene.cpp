@@ -1,10 +1,4 @@
 #include "scene.h"
-#include <Eigen/Core>
-#include <json/json.hpp>
-#include "eigen_json.h"
-#include "aliases.h"
-#include "bvh.h"
-#include "intersection.h"
 
 Scene Scene::fromJson(const nlohmann::json &json_data)
 {

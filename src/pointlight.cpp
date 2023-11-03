@@ -1,7 +1,4 @@
 #include "pointlight.h"
-#include "aliases.h"
-#include <json/json.hpp>
-#include "eigen_json.h"
 
 PointLight::PointLight(Point3f position, Color3f intensity)
 {

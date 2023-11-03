@@ -2,7 +2,6 @@
 #include "sphere.h"
 #include "cylinder.h"
 #include "triangle.h"
-#include "eigen_json.h"
 
 Object::Object(std::optional<Material> material) : material(material)
 {

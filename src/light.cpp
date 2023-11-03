@@ -2,7 +2,6 @@
 #include "pointlight.h"
 #include "arealight.h"
 #include "sunlight.h"
-#include "aliases.h"
 
 /**
  * @brief Construct a new Light object.

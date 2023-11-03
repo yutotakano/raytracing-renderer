@@ -1,6 +1,4 @@
 #include "arealight.h"
-#include <json/json.hpp>
-#include "eigen_json.h"
 
 AreaLight::AreaLight(Point3f position, Color3f intensity)
 {

@@ -6,8 +6,7 @@
 #include "object.h"
 #include "camera.h"
 #include "light.h"
-#include <Eigen/Core>
-#include "aliases.h"
+#include "vector.h"
 #include "ray.h"
 #include "intersection.h"
 #include "bvh.h"

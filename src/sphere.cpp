@@ -1,6 +1,4 @@
 #include "sphere.h"
-#include <json/json.hpp>
-#include "eigen_json.h"
 
 Sphere::Sphere(Point3f center, float radius, std::optional<Material> material) : center(center), radius(radius), Object(material)
 {

@@ -1,6 +1,4 @@
 #include "sunlight.h"
-#include <json/json.hpp>
-#include "eigen_json.h"
 
 SunLight::SunLight(Point3f position, Color3f intensity)
 {

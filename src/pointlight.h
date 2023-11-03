@@ -1,5 +1,5 @@
 #include "light.h"
-#include "aliases.h"
+#include "vector.h"
 
 class PointLight : public Light
 {

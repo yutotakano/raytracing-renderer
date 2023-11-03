@@ -1,5 +1,5 @@
 #include "object.h"
-#include "aliases.h"
+#include "vector.h"
 
 class Triangle : public Object
 {

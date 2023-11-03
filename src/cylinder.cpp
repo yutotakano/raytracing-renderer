@@ -1,6 +1,4 @@
 #include "cylinder.h"
-#include <json/json.hpp>
-#include "eigen_json.h"
 
 Cylinder::Cylinder(Point3f center, Vector3f axis, float radius, float height, std::optional<Material> material) : center(center), axis(axis), radius(radius), height(height), Object(material)
 {
