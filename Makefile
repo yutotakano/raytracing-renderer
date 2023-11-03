@@ -5,4 +5,4 @@ LDFLAGS = -L/opt/homebrew/lib
 LIBS = -lSDL2
 
 run:
-	$(CC) main.cpp $(INCLUDES) $(LDFLAGS) $(LIBS) -o main
+	$(CC) -std=c++17 src/main.cpp $(INCLUDES) $(LDFLAGS) $(LIBS) -o main
