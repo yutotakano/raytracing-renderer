@@ -4,6 +4,9 @@
 #include "object.h"
 #include "../vector.h"
 
+/**
+ * @brief Represents a triangle object.
+ */
 class Triangle : public Object
 {
 public:

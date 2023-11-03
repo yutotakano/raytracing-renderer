@@ -7,21 +7,21 @@ Object::Object(std::optional<Material> material) : material(material)
 {
 }
 
-Object Object::fromJson(const nlohmann::json &json_data)
+std::unique_ptr<Object> Object::fromJson(const nlohmann::json &json_data)
 {
   std::string type = json_data["type"];
 
   if (type == "sphere")
   {
-    return Sphere::fromJson(json_data);
+    return std::make_unique<Sphere>(Sphere::fromJson(json_data));
   }
   else if (type == "cylinder")
   {
-    return Cylinder::fromJson(json_data);
+    return std::make_unique<Cylinder>(Cylinder::fromJson(json_data));
   }
   else if (type == "triangle")
   {
-    return Triangle::fromJson(json_data);
+    return std::make_unique<Triangle>(Triangle::fromJson(json_data));
   }
   else
   {

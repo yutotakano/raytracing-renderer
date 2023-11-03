@@ -3,6 +3,9 @@
 
 #include <json/json.hpp>
 
+/**
+ * @brief A vector in 2D space.
+ */
 class Vector2f {
 public:
   Vector2f();
@@ -42,6 +45,9 @@ template <> struct adl_serializer<Vector2f> {
 };
 NLOHMANN_JSON_NAMESPACE_END
 
+/**
+ * @brief A vector in 3D space.
+ */
 class Vector3f {
 public:
   Vector3f();
@@ -86,6 +92,9 @@ template <> struct adl_serializer<Vector3f> {
 };
 NLOHMANN_JSON_NAMESPACE_END
 
+/**
+ * @brief A vector in 4D space.
+ */
 class Vector4f {
 public:
   Vector4f();
@@ -130,6 +139,9 @@ template <> struct adl_serializer<Vector4f> {
 };
 NLOHMANN_JSON_NAMESPACE_END
 
+/**
+ * @brief A 3x3 matrix.
+ */
 class Matrix3f {
 public:
   Matrix3f();
@@ -160,6 +172,9 @@ template <> struct adl_serializer<Matrix3f> {
 };
 NLOHMANN_JSON_NAMESPACE_END
 
+/**
+ * @brief A 4x4 matrix.
+ */
 class Matrix4f {
 public:
   Matrix4f();
@@ -190,16 +205,14 @@ template <> struct adl_serializer<Matrix4f> {
 };
 NLOHMANN_JSON_NAMESPACE_END
 
-
+// A stationary point in 2D space.
 using Point2f = Vector2f;
+// A stationary point in 3D space.
 using Point3f = Vector3f;
 
-using Vector2f = Vector2f;
-using Vector3f = Vector3f;
-using Matrix3f = Matrix3f;
-using Matrix4f = Matrix4f;
-
+// A color represented by RGB values. Values could be above 1.0 for HDR.
 using Color3f = Vector3f;
+// A color represented by RGBA values. Values could be above 1.0 for HDR.
 using Color4f = Vector4f;
 
 #endif // VECTOR_H

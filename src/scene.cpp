@@ -11,7 +11,7 @@ Scene Scene::fromJson(const nlohmann::json &json_data)
   {
     for (auto &object : json_data["shapes"])
     {
-      scene.addObject(std::make_shared<Object>(Object::fromJson(object)));
+      scene.addObject(std::move(Object::fromJson(object)));
     }
   }
   if (json_data.contains("lightsources"))
@@ -59,6 +59,8 @@ Color3f Scene::traceRay(Ray ray, float minDepth, float maxDepth)
   }
 
   // If intersection is too close or too far, return background color
+  // TODO: shouldn't this be within the intersect() function so we get the
+  // next closest intersection if it's below minDepth?
   if (intersection.distance < minDepth || intersection.distance > maxDepth)
   {
     return background_color;

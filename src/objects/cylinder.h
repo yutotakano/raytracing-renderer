@@ -4,6 +4,9 @@
 #include "object.h"
 #include "../vector.h"
 
+/**
+ * @brief Represents a cylinder object.
+ */
 class Cylinder : public Object
 {
 public:

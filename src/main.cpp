@@ -1,17 +1,9 @@
-/*This source code copyrighted by Lazy Foo' Productions 2004-2023
-and may not be redistributed without written permission.*/
-
-// Using SDL and standard IO
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <json/json.hpp>
 #include <argparse/argparse.hpp>
 #include <fstream>
 #include "scene.h"
-
-// Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
 
 /**
  * The arguments that the ray tracer takes in.

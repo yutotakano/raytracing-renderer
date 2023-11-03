@@ -4,6 +4,9 @@
 #include "objects/object.h"
 #include "lights/light.h"
 
+/**
+ * @brief Represents a bounding volume hierarchy.
+ */
 class BVH {
 public:
   BVH(std::vector<std::shared_ptr<Object>> objects,

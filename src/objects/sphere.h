@@ -4,6 +4,9 @@
 #include "object.h"
 #include "../vector.h"
 
+/**
+ * @brief Represents a sphere object.
+ */
 class Sphere : public Object
 {
 public:
