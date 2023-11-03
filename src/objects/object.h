@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include "material.h"
+#include <optional>
 #include "../vector.h"
 #include <json/json.hpp>
 
