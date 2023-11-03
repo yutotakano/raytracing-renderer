@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <json/json.hpp>
-#include "object.h"
-#include "camera.h"
-#include "light.h"
+#include "objects/object.h"
+#include "cameras/camera.h"
+#include "lights/light.h"
 #include "vector.h"
 #include "ray.h"
 #include "intersection.h"

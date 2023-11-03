@@ -1,8 +1,8 @@
 #ifndef BVH_H
 #define BVH_H
 
-#include "object.h"
-#include "light.h"
+#include "objects/object.h"
+#include "lights/light.h"
 
 class BVH {
 public:

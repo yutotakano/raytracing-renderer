@@ -1,4 +1,7 @@
-#include "vector.h"
+#ifndef PINHOLE_H
+#define PINHOLE_H
+
+#include "../vector.h"
 #include "camera.h"
 
 class Pinhole : public Camera {
@@ -15,3 +18,5 @@ private:
   float fov;
   float exposure;
 };
+
+#endif // PINHOLE_H

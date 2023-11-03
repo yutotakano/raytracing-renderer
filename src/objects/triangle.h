@@ -1,5 +1,8 @@
+#ifndef TRIANGLE_H
+#define TRIANGLE_H
+
 #include "object.h"
-#include "vector.h"
+#include "../vector.h"
 
 class Triangle : public Object
 {
@@ -11,3 +14,5 @@ public:
   Point3f v1;
   Point3f v2;
 };
+
+#endif // TRIANGLE_H

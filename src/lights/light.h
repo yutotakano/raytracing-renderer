@@ -2,7 +2,7 @@
 #define LIGHT_H
 
 #include <json/json.hpp>
-#include "vector.h"
+#include "../vector.h"
 
 class Light
 {

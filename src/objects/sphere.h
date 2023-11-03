@@ -1,5 +1,8 @@
+#ifndef SPHERE_H
+#define SPHERE_H
+
 #include "object.h"
-#include "vector.h"
+#include "../vector.h"
 
 class Sphere : public Object
 {
@@ -10,3 +13,5 @@ public:
   Point3f center;
   float radius;
 };
+
+#endif // SPHERE_H

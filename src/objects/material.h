@@ -1,7 +1,7 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "vector.h"
+#include "../vector.h"
 #include <json/json.hpp>
 
 class Material

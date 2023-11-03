@@ -1,5 +1,8 @@
+#ifndef CYLINDER_H
+#define CYLINDER_H
+
 #include "object.h"
-#include "vector.h"
+#include "../vector.h"
 
 class Cylinder : public Object
 {
@@ -12,3 +15,5 @@ public:
   float radius;
   float height;
 };
+
+#endif // CYLINDER_H
