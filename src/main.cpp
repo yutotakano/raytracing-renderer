@@ -36,16 +36,17 @@ int main(int argc, char *argv[])
     // renderer to render to the screen.
     std::vector<Color3f> output(camera_ptr->getFilmSize().x() * camera_ptr->getFilmSize().y());
 
+    // Mutex for the output variable as std::vector is not safe for reading
+    // while writing from another thread
+    std::mutex output_mutex;
+
     // Kick off the ray tracer in a new asynchronous thread
-    bool rendering = true;
     std::future<void> renderAsync = std::async(std::launch::async,
-        [&rendering, &output, &scene, camera_ptr] {
+        [&output, &output_mutex, &scene, camera_ptr] {
             // Loop through each pixel in the film
             std::cout << "Rendering..." << std::endl;
             for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
                 for (int i = 0; i < camera_ptr->getFilmSize().x(); i++) {
-                    std::cout << "Pixel " << i << ", " << j << std::endl;
-
                     // Compute the ray direction for this pixel
                     Ray ray = camera_ptr->generateRay(Point2f(i, j));
 
@@ -53,11 +54,12 @@ int main(int argc, char *argv[])
                     Color3f pixel_color = scene.traceRay(ray, 0, 1000);
 
                     // Store the color in the output vector
-                    output[i + j * camera_ptr->getFilmSize().x()] = Color3f(1, 1, 0);
+                    output_mutex.lock();
+                    output[i + j * camera_ptr->getFilmSize().x()] = pixel_color;
+                    output_mutex.unlock();
                 }
             }
-
-            rendering = false;
+            std::cout << "Done rendering!" << std::endl;
         }
     );
 
@@ -109,8 +111,11 @@ int main(int argc, char *argv[])
                 }
 
                 // Only re-draw if we're still rendering
-                if (rendering)
+                if (renderAsync.valid())
                 {
+                    // Acquire the lock on the output vector for this block
+                    std::lock_guard<std::mutex> lock(output_mutex);
+
                     // Display what we have so far to the screen
                     for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
                         for (int i = 0; i < camera_ptr->getFilmSize().x(); i++) {
@@ -132,6 +137,7 @@ int main(int argc, char *argv[])
                             *target_pixel = pixel_color_int;
                         }
                     }
+
                     SDL_UpdateWindowSurface(window);
                 }
                 else
