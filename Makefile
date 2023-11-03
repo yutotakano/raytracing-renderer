@@ -4,7 +4,7 @@ LDFLAGS = -L/opt/homebrew/lib
 LIBS = -lSDL2
 
 CXX = clang++
-CXXFLAGS = -std=c++17
+CXXFLAGS = -std=c++17 -Ofast
 
 CXX_SRCS := $(shell find src -name "*.cpp")
 CXX_OBJS := ${patsubst %.cpp,build/%.o,${CXX_SRCS}}
@@ -18,5 +18,5 @@ build/%.o : %.cpp
 	@echo "Building $@..."
 	${CXX} -o $@ $< $(INCLUDES) ${CXXFLAGS} -c
 
-clean :
+clean:
 	rm -rf build
