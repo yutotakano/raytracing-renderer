@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
                                              + 50 * screenSurface->pitch
                                              + 50 * screenSurface->format->BytesPerPixel);
                 *target_pixel = pixel_color;
+                SDL_UpdateWindowSurface(window);
             }
         }
     }
