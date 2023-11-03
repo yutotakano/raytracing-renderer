@@ -1,3 +1,8 @@
+CC = clang++
+
+INCLUDES = -I/opt/homebrew/include -Iexternal
+LDFLAGS = -L/opt/homebrew/lib
+LIBS = -lSDL2
 
 run:
-	g++ main.cpp -I/opt/homebrew/include -L/opt/homebrew/lib -lSDL2
+	$(CC) main.cpp $(INCLUDES) $(LDFLAGS) $(LIBS) -o main
