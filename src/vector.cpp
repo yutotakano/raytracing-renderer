@@ -74,6 +74,11 @@ Vector3f Vector3f::cross(const Vector3f& other) const {
           x_ * other.y_ - y_ * other.x_);
 }
 
+Vector3f Vector3f::normalized() const {
+  float len = length();
+  return Vector3f(x_ / len, y_ / len, z_ / len);
+}
+
 
 /** Vector4f */
 
