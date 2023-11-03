@@ -1,6 +1,6 @@
 #include "sphere.h"
 
-Sphere::Sphere(Point3f center, float radius, std::optional<Material> material) : center(center), radius(radius), Object(material)
+Sphere::Sphere(Point3f center, float radius, std::optional<Material> material) : Object(material), center(center), radius(radius)
 {
 }
 

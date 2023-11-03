@@ -11,7 +11,7 @@ Scene Scene::fromJson(const nlohmann::json &json_data)
   {
     for (auto &object : json_data["shapes"])
     {
-      scene.addObject(std::move(Object::fromJson(object)));
+      scene.addObject(Object::fromJson(object));
     }
   }
   if (json_data.contains("lightsources"))

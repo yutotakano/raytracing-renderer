@@ -1,6 +1,6 @@
 #include "triangle.h"
 
-Triangle::Triangle(Point3f v0, Point3f v1, Point3f v2, std::optional<Material> material) : v0(v0), v1(v1), v2(v2), Object(material)
+Triangle::Triangle(Point3f v0, Point3f v1, Point3f v2, std::optional<Material> material) : Object(material), v0(v0), v1(v1), v2(v2)
 {
 }
 

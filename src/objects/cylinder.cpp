@@ -1,6 +1,6 @@
 #include "cylinder.h"
 
-Cylinder::Cylinder(Point3f center, Vector3f axis, float radius, float height, std::optional<Material> material) : center(center), axis(axis), radius(radius), height(height), Object(material)
+Cylinder::Cylinder(Point3f center, Vector3f axis, float radius, float height, std::optional<Material> material) : Object(material), center(center), axis(axis), radius(radius), height(height)
 {
 }
 

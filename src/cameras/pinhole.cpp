@@ -1,6 +1,6 @@
 #include "pinhole.h"
 
-Pinhole::Pinhole(Vector2f filmSize, Vector3f position, Vector3f lookAt, Vector3f upVector, float fov, float exposure) : position(position), lookAt(lookAt), upVector(upVector), fov(fov), exposure(exposure), Camera(filmSize) {};
+Pinhole::Pinhole(Vector2f filmSize, Vector3f position, Vector3f lookAt, Vector3f upVector, float fov, float exposure) : Camera(filmSize), position(position), lookAt(lookAt), upVector(upVector), fov(fov), exposure(exposure) {};
 
 Pinhole Pinhole::fromJson(const nlohmann::json &json) {
   return Pinhole(Vector2f(json["width"], json["height"]), json["position"], json["lookAt"], json["upVector"], json["fov"], json["exposure"]);
