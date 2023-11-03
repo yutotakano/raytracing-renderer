@@ -33,9 +33,10 @@ int main(int argc, char *argv[])
     std::ifstream f(args.scene_json);
     nlohmann::json json_data = nlohmann::json::parse(f);
 
+    std::unique_ptr<Camera> camera_ptr = Camera::fromJson(json_data["camera"]);
     Scene scene = Scene::fromJson(json_data["scene"]);
 
-    // The window we'll be rendering to
+    // The window we'll be rendering a live preview to
     SDL_Window *window = NULL;
 
     // The surface contained by the window
@@ -49,7 +50,13 @@ int main(int argc, char *argv[])
     else
     {
         // Create window
-        window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        window = SDL_CreateWindow(
+            "Render Preview",
+            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED,
+            camera_ptr->getFilmSize().x(),
+            camera_ptr->getFilmSize().y(),
+            SDL_WINDOW_SHOWN);
         if (window == NULL)
         {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -65,7 +72,7 @@ int main(int argc, char *argv[])
             // Update the surface
             SDL_UpdateWindowSurface(window);
 
-            // Hack to get window to stay up
+            // Keep the window open and updating until the user closes it
             SDL_Event e;
             bool quit = false;
             while (quit == false)
@@ -75,6 +82,13 @@ int main(int argc, char *argv[])
                     if (e.type == SDL_QUIT)
                         quit = true;
                 }
+
+                // Render the scene
+                Uint32 pixel_color = 0xFF000000;
+                Uint32 * const target_pixel = (Uint32 *) ((Uint8 *) screenSurface->pixels
+                                             + 50 * screenSurface->pitch
+                                             + 50 * screenSurface->format->BytesPerPixel);
+                *target_pixel = pixel_color;
             }
         }
     }
