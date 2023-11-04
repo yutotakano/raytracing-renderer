@@ -1,30 +1,20 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <json/json.hpp>
-#include <argparse/argparse.hpp>
 #include <fstream>
 #include <future>
+#include <iostream>
+#include "arguments.h"
 #include "scene.h"
 #include "io/ppm.h"
-
-/**
- * The arguments that the ray tracer takes in.
-*/
-struct ProgramArgs : public argparse::Args {
-    // std::string &anonymous = arg("an anonymous positional string argument");
-    std::string &scene_json  = arg("scene", "Path to the JSON file containing the scene description");
-    // int &k                 = kwarg("k", "A keyworded integer value");
-    // float &alpha           = kwarg("a,alpha", "An optional float value").set_default(0.5f);
-    // bool &verbose          = flag("v,verbose", "A flag to toggle verbose");
-};
 
 int main(int argc, char *argv[])
 {
     // Parse the arguments
-    auto args = argparse::parse<ProgramArgs>(argc, argv);
+    Arguments args = Arguments(argc, argv);
 
     // Load the JSON file based on the path provided in the arguments
-    std::ifstream f(args.scene_json);
+    std::ifstream f(args.input_file);
     nlohmann::json json_data = nlohmann::json::parse(f);
 
     // Create the camera and scene from the JSON data
