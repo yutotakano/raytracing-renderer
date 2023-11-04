@@ -58,6 +58,14 @@ int main(int argc, char *argv[])
         }
     );
 
+    // Whether the live preview has explicitly been disabled
+    if (args.no_preview)
+    {
+        // Block and wait for async thread and exit.
+        renderAsync.get();
+        return 0;
+    }
+
     // The window we'll be rendering a live preview to
     SDL_Window *window = NULL;
 
