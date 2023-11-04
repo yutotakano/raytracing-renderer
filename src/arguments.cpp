@@ -10,7 +10,7 @@ Arguments::Arguments(int argc, char *argv[])
 
   for (int i = 0; i < argc; i++)
   {
-    if (arguments[i].find(".json"))
+    if (arguments[i].find(".json") != std::string::npos)
     {
       input_file = arguments[i];
     }
