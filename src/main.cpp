@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
     // Kick off the ray tracer in a new asynchronous thread
     std::future<void> renderAsync = std::async(std::launch::async,
-        [&output, &output_mutex, &scene, camera_ptr] {
+        [&args, &output, &output_mutex, &scene, camera_ptr] {
             // Loop through each pixel in the film
             std::cout << "Rendering..." << std::endl;
             for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
@@ -50,6 +50,11 @@ int main(int argc, char *argv[])
                 }
             }
             std::cout << "Done rendering!" << std::endl;
+
+            // Write to a PPM file when the user closes the window
+            output_mutex.lock();
+            PPM::writePPM(output, camera_ptr->getFilmSize(), args.output_file);
+            output_mutex.unlock();
         }
     );
 
@@ -135,9 +140,6 @@ int main(int argc, char *argv[])
                     // We're done rendering
                 }
             }
-
-            // Write to a PPM file when the user closes the window
-            PPM::writePPM(output, camera_ptr->getFilmSize(), "output.ppm");
         }
     }
 
