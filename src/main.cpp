@@ -4,7 +4,7 @@
 #include <fstream>
 #include <future>
 #include <iostream>
-#include "arguments.h"
+#include "io/arguments.h"
 #include "scene.h"
 #include "io/ppm.h"
 
