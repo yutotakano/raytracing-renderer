@@ -3,9 +3,9 @@
 Scene Scene::fromJson(const nlohmann::json &json_data)
 {
   Scene scene = Scene();
-  if (json_data.contains("background_color"))
+  if (json_data.contains("backgroundcolor"))
   {
-    scene.background_color = json_data["background_color"];
+    scene.background_color = json_data["backgroundcolor"];
   }
   if (json_data.contains("shapes"))
   {
