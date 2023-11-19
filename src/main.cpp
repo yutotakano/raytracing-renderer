@@ -108,6 +108,8 @@ int main(int argc, char *argv[])
             // Keep the window open and updating until the user closes it
             SDL_Event e;
             bool quit = false;
+            bool render_done = false;
+
             while (quit == false)
             {
                 while (SDL_PollEvent(&e))
@@ -116,10 +118,8 @@ int main(int argc, char *argv[])
                         quit = true;
                 }
 
-                // Only re-draw if we're still rendering. std::future doesn't
-                // have a convenient function for checking if a future is still
-                // running, so we'll check if it's ready (finished) in 0 seconds.
-                if (renderAsync.wait_for(std::chrono::seconds(0)) != std::future_status::ready)
+                // Draw to screen at least once (even if render is done)
+                do
                 {
                     // Acquire the lock on the output vector for this block
                     output_mutex.lock();
@@ -150,11 +150,15 @@ int main(int argc, char *argv[])
                     output_mutex.unlock();
 
                     SDL_UpdateWindowSurface(window);
-                }
-                else
-                {
-                    // We're done rendering
-                }
+                    
+                    // Only re-draw if we're still rendering. std::future doesn't
+                    // have a convenient function for checking if a future is still
+                    // running, so we'll check if it's ready (finished) in 0 seconds.
+                    if (renderAsync.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
+                    {
+                        render_done = true;
+                    }
+                } while (render_done == false);
             }
         }
     }
