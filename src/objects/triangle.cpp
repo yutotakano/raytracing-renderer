@@ -1,4 +1,7 @@
 #include "triangle.h"
+#include <limits>
+
+const float EPSILON = std::numeric_limits<float>::epsilon();
 
 Triangle::Triangle(Point3f v0, Point3f v1, Point3f v2, std::optional<Material> material) : Object(material), v0(v0), v1(v1), v2(v2)
 {
@@ -30,4 +33,53 @@ Triangle Triangle::fromJson(const nlohmann::json &json_data)
   }
 
   return Triangle(v0, v1, v2, material);
+}
+
+std::optional<Intersection> Triangle::intersect(const Ray ray, float minDepth, float maxDepth) const
+{
+  Vector3f edge1 = v1 - v0;
+  Vector3f edge2 = v2 - v0;
+  Vector3f h = ray.direction.cross(edge2);
+  float a = edge1.dot(h);
+
+  if (a > -EPSILON && a < EPSILON)
+  {
+    return std::nullopt;
+  }
+
+  float f = 1.f / a;
+  Vector3f s = ray.origin - v0;
+  float u = f * s.dot(h);
+
+  if (u < 0.f || u > 1.f)
+  {
+    return std::nullopt;
+  }
+
+  Vector3f q = s.cross(edge1);
+  float v = f * ray.direction.dot(q);
+
+  if (v < 0.f || u + v > 1.f)
+  {
+    return std::nullopt;
+  }
+
+  float t = f * edge2.dot(q);
+
+  if (t > EPSILON)
+  {
+    Point3f intersection_point = ray.origin + ray.direction * t;
+    Vector3f normal = edge1.cross(edge2).normalized();
+
+    Intersection i
+      {
+        .distance = t,
+        .point = intersection_point,
+        .normal = normal
+      };
+
+    return i;
+  }
+
+  return std::nullopt;
 }

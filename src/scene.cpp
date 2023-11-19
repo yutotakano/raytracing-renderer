@@ -44,16 +44,16 @@ void Scene::addLight(std::shared_ptr<Light> light)
 void Scene::buildBVH()
 {
   // Build BVH acceleration structure for querying objects in the scene
-  bvh = BVH(objects, lights);
+  // bvh = BVH(objects, lights);
 }
 
-Color3f Scene::traceRay(Ray ray, float minDepth, float maxDepth)
+Color3f Scene::traceRay(Ray ray, float minDepth, float maxDepth, bool binary) const
 {
   // Find closest intersection with an object in the scene
-  Intersection intersection = this->intersect(ray);
+  std::optional<Intersection> intersection = this->intersect(ray, minDepth, maxDepth);
 
   // If no intersection, return background color with infinite depth
-  if (!intersection.hit)
+  if (!intersection.has_value())
   {
     return background_color;
   }
@@ -61,9 +61,16 @@ Color3f Scene::traceRay(Ray ray, float minDepth, float maxDepth)
   // If intersection is too close or too far, return background color
   // TODO: shouldn't this be within the intersect() function so we get the
   // next closest intersection if it's below minDepth?
-  if (intersection.distance < minDepth || intersection.distance > maxDepth)
+  if (intersection->distance < minDepth || intersection->distance > maxDepth)
   {
     return background_color;
+  }
+
+  // If binary mode is enabled, don't do any shading calculation, just return
+  // red if there was an intersection
+  if (binary)
+  {
+    return Color3f(1.f, 0.f, 0.f);
   }
 
   // Calculate color at intersection point using Phong shading model
@@ -81,8 +88,29 @@ Color3f Scene::traceRay(Ray ray, float minDepth, float maxDepth)
   return color;
 }
 
-Intersection Scene::intersect(const Ray ray)
+std::optional<Intersection> Scene::intersect(const Ray ray, float minDepth, float maxDepth) const
 {
-  // Find closest intersection with an object in the scene using BVH
+  // Find closest intersection with an object in the scene
+  if (!bvh.has_value())
+  {
+    // If no BVH, loop through all objects in the scene
+    std::optional<Intersection> closest_intersection;
+
+    for (const auto &object : objects)
+    {
+      std::optional<Intersection> intersection = object->intersect(ray, minDepth, maxDepth);
+      if (intersection.has_value())
+      {
+        // This was an intersection, so check if it's the closest one compared
+        // to the previous closest intersection (if any)
+        if (!closest_intersection.has_value() || intersection->distance < closest_intersection->distance)
+        {
+          closest_intersection = intersection;
+        }
+      }
+    }
+
+    return closest_intersection;
+  }
   return Intersection();
 }

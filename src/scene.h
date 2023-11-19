@@ -47,18 +47,21 @@ public:
    * @param ray Camera ray
    * @param minDepth Minimum ray length for intersection checks
    * @param maxDepth Maximum ray length for intersection checks
+   * @param binary Whether to output a single color for intersections (red)
    * @return Color3f object
    */
-  Color3f traceRay(const Ray ray, float minDepth, float maxDepth);
+  Color3f traceRay(const Ray ray, float minDepth, float maxDepth, bool binary = false) const;
 
   /**
    * @brief Intersect a ray with the scene, returning the closest intersection.
    * The intersection will have a hit value of false if the ray did not find
    * anything.
    * @param ray Camera ray
-   * @return Intersection object
+   * @param minDepth Minimum ray length for intersection checks
+   * @param maxDepth Maximum ray length for intersection checks
+   * @return Optional intersection object
    */
-  Intersection intersect(const Ray ray);
+  std::optional<Intersection> intersect(const Ray ray, float minDepth, float maxDepth) const;
 
 private:
   Color3f background_color;

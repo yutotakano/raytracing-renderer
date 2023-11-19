@@ -4,6 +4,7 @@
 #include <fstream>
 #include <future>
 #include <iostream>
+#include <thread>
 #include "io/arguments.h"
 #include "scene.h"
 #include "io/ppm.h"
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
                     Ray ray = camera_ptr->generateRay(Point2f(i, j));
 
                     // Compute the color for this pixel
-                    Color3f pixel_color = scene.traceRay(ray, 0, 1000);
+                    Color3f pixel_color = scene.traceRay(ray, 0, 1000, args.binary);
 
                     // Store the color in the output vector
                     output_mutex.lock();

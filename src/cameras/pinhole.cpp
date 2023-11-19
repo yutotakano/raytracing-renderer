@@ -21,6 +21,6 @@ Ray Pinhole::generateRay(Point2f filmPosition) const {
   Vector3f v = w.cross(u);
 
   // direction is the direction from camera origin to the filmPosition
-  Vector3f direction = u * (filmPosition.x() / filmSize.x() - 0.5f) * 2.0f * halfWidth + v * (filmPosition.y() / filmSize.y() - 0.5f) * 2.0f * halfHeight - w;
+  Vector3f direction = u * (1.0f - filmPosition.x() / filmSize.x() - 0.5f) * 2.0f * halfWidth + v * (1.0f - filmPosition.y() / filmSize.y() - 0.5f) * 2.0f * halfHeight - w;
   return Ray(position, direction.normalized());
 }

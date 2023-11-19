@@ -27,6 +27,10 @@ Arguments::Arguments(int argc, char *argv[])
       }
       output_file = arguments[i];
     }
+    else if (arguments[i] == "--binary")
+    {
+      binary = true;
+    }
   }
 
   if (input_file.empty())

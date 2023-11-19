@@ -36,3 +36,76 @@ Cylinder Cylinder::fromJson(const nlohmann::json &json_data)
 
   return Cylinder(center, axis, radius, height, material);
 }
+
+std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, float maxDepth) const
+{
+  // Calculate the direction vector of the ray
+  Vector3f ray_direction = ray.direction;
+
+  // Calculate the vector from the ray origin to the center of the cylinder
+  Vector3f oc = ray.origin - center;
+
+  // Calculate the dot product of the ray direction and the axis of the cylinder
+  float a = ray_direction.dot(axis);
+
+  // Calculate the dot product of the oc vector and the axis of the cylinder
+  float b = oc.dot(axis);
+
+  // Calculate the coefficients for the quadratic equation
+  float A = (ray_direction - axis * a).dot(ray_direction - axis * a);
+  float B = 2.0f * (ray_direction - axis * a).dot(oc - axis * b);
+  float C = (oc - axis * b).dot(oc - axis * b) - radius * radius;
+
+  // Calculate the discriminant
+  float discriminant = B * B - 4.0f * A * C;
+
+  // Check if the ray intersects with the cylinder
+  if (discriminant > 0)
+  {
+    // Calculate the solutions for t
+    float t1 = (-B - sqrt(discriminant)) / (2.0f * A);
+    float t2 = (-B + sqrt(discriminant)) / (2.0f * A);
+
+    // Check if the solutions are within the valid range
+    if (t1 > minDepth && t1 < maxDepth)
+    {
+      // Calculate the intersection point
+      Point3f intersection_point = ray.origin + ray.direction * t1;
+
+      // Check if the intersection point is within the height of the cylinder
+      if (intersection_point.y() >= center.y() - height / 2 && intersection_point.y() <= center.y() + height / 2)
+      {
+        Intersection i
+          {
+            .distance = t1,
+            .point = intersection_point,
+            .normal = (intersection_point - center - axis * b) * (1.0f / radius)
+          };
+
+        return i;
+      }
+    }
+
+    if (t2 > minDepth && t2 < maxDepth)
+    {
+      // Calculate the intersection point
+      Point3f intersection_point = ray.origin + ray.direction * t2;
+
+      // Check if the intersection point is within the height of the cylinder
+      if (intersection_point.y() >= center.y() - height / 2 && intersection_point.y() <= center.y() + height / 2)
+      {
+        Intersection i
+          {
+            .distance = t2,
+            .point = intersection_point,
+            .normal = (intersection_point - center - axis * b) * (1.0f / radius)
+          };
+
+        return i;
+      }
+    }
+  }
+
+  return std::nullopt;
+}
+

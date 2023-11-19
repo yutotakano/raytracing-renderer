@@ -13,6 +13,8 @@ public:
   Sphere(Point3f center, float radius, std::optional<Material> material);
   static Sphere fromJson(const nlohmann::json &json_data);
 
+  std::optional<Intersection> intersect(const Ray ray, float minDepth, float maxDepth) const override;
+
   Point3f center;
   float radius;
 };

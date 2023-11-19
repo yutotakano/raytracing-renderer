@@ -26,3 +26,38 @@ Sphere Sphere::fromJson(const nlohmann::json &json_data)
 
   return Sphere(center, radius, material);
 }
+
+std::optional<Intersection> Sphere::intersect(const Ray ray, float minDepth, float maxDepth) const
+{
+  Vector3f oc = ray.origin - center;
+  float a = ray.direction.dot(ray.direction);
+  float b = 2.f * oc.dot(ray.direction);
+  float c = oc.dot(oc) - radius * radius;
+  float discriminant = b * b - 4.f * a * c;
+
+  if (discriminant < 0.f)
+  {
+    return std::nullopt;
+  }
+
+  float t = (-b - std::sqrt(discriminant)) / (2.f * a);
+  if (t < 0.f)
+  {
+    t = (-b + std::sqrt(discriminant)) / (2.f * a);
+  }
+  if (t < 0.f)
+  {
+    return std::nullopt;
+  }
+
+  Point3f intersection_point = ray.origin + ray.direction * t;
+  Vector3f normal = (intersection_point - center).normalized();
+
+  Intersection i
+    {
+      .distance = t,
+      .point = intersection_point,
+      .normal = normal
+    };
+  return i;
+}

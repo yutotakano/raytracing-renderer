@@ -7,5 +7,6 @@ public:
 
   std::string input_file;
   bool no_preview = false;
+  bool binary = false;
   std::string output_file;
 };

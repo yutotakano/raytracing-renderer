@@ -8,12 +8,6 @@
  */
 class Intersection {
 public:
-
-  /**
-   * @brief Whether the ray hit an object.
-   */
-  bool hit;
-
   /**
    * @brief The distance from the ray origin to the intersection point.
    */
