@@ -56,6 +56,8 @@ int main(int argc, char *argv[])
             output_mutex.lock();
             PPM::writePPM(output, camera_ptr->getFilmSize(), args.output_file);
             output_mutex.unlock();
+
+            std::cout << "Wrote to " << args.output_file << std::endl;
         }
     );
 
@@ -114,11 +116,13 @@ int main(int argc, char *argv[])
                         quit = true;
                 }
 
-                // Only re-draw if we're still rendering
-                if (renderAsync.valid())
+                // Only re-draw if we're still rendering. std::future doesn't
+                // have a convenient function for checking if a future is still
+                // running, so we'll check if it's ready (finished) in 0 seconds.
+                if (renderAsync.wait_for(std::chrono::seconds(0)) != std::future_status::ready)
                 {
                     // Acquire the lock on the output vector for this block
-                    std::lock_guard<std::mutex> lock(output_mutex);
+                    output_mutex.lock();
 
                     // Display what we have so far to the screen
                     for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
@@ -141,6 +145,9 @@ int main(int argc, char *argv[])
                             *target_pixel = pixel_color_int;
                         }
                     }
+
+                    // Release the lock on the output vector
+                    output_mutex.unlock();
 
                     SDL_UpdateWindowSurface(window);
                 }
