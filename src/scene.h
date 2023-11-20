@@ -42,17 +42,6 @@ public:
   void buildBVH();
 
   /**
-   * @brief Trace a ray through the scene, returning the final color of the
-   * ray. If no intersection is found, the background color is returned.
-   * @param ray Camera ray
-   * @param minDepth Minimum ray length for intersection checks
-   * @param maxDepth Maximum ray length for intersection checks
-   * @param binary Whether to output a single color for intersections (red)
-   * @return Color3f object
-   */
-  Color3f traceRay(const Ray ray, float minDepth, float maxDepth, bool binary = false) const;
-
-  /**
    * @brief Intersect a ray with the scene, returning the closest intersection.
    * The intersection will have a hit value of false if the ray did not find
    * anything.
@@ -62,6 +51,12 @@ public:
    * @return Optional intersection object
    */
   std::optional<Intersection> intersect(const Ray ray, float minDepth, float maxDepth) const;
+
+  /**
+   * @brief Get the background color of the scene.
+   * @return Color3f object
+   */
+  Color3f getBackgroundColor() const;
 
 private:
   Color3f background_color;

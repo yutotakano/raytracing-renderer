@@ -8,6 +8,7 @@
 #include "io/arguments.h"
 #include "io/ppm.h"
 #include "scene.h"
+#include "tracer/tracer.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +19,8 @@ int main(int argc, char *argv[])
     std::ifstream f(args.input_file);
     nlohmann::json json_data = nlohmann::json::parse(f);
 
-    // Create the camera and scene from the JSON data
+    // Create the tracer, camera, and scene from the JSON data
+    std::shared_ptr<Tracer> tracer_ptr = Tracer::fromJson(json_data);
     std::shared_ptr<Camera> camera_ptr = Camera::fromJson(json_data["camera"]);
     Scene scene = Scene::fromJson(json_data["scene"]);
 
@@ -36,7 +38,7 @@ int main(int argc, char *argv[])
 
     // Kick off the ray tracer in a new asynchronous thread
     std::future<void> renderAsync = std::async(std::launch::async,
-        [&args, &output, &output_mutex, &quit, &scene, camera_ptr] {
+        [&args, &output, &output_mutex, &quit, &scene, tracer_ptr, camera_ptr] {
             // Loop through each pixel in the film
             std::cout << "Rendering..." << std::endl;
             #pragma omp parallel for
@@ -48,7 +50,7 @@ int main(int argc, char *argv[])
                     Ray ray = camera_ptr->generateRay(Point2f(i, j));
 
                     // Compute the color for this pixel
-                    Color3f pixel_color = scene.traceRay(ray, 0, 1000, args.binary);
+                    Color3f pixel_color = tracer_ptr->traceRay(scene, ray, 0, 1000);
 
                     // Store the color in the output vector
                     output_mutex.lock();
@@ -151,9 +153,9 @@ int main(int argc, char *argv[])
                             // which is 32-bit RGBA in LSB-order
                             uint32_t pixel_color_int = (uint32_t) (
                                 (255 << 24) +
-                                (int) (pixel_color.x() * 255) +
+                                ((int) (pixel_color.x() * 255) << 16) +
                                 ((int) (pixel_color.y() * 255) << 8) +
-                                ((int) (pixel_color.z() * 255) << 16));
+                                ((int) (pixel_color.z() * 255) << 0));
 
                             // Index into the screen surface's pixel array by bytes
                             uint32_t * const target_pixel = (uint32_t *) (
