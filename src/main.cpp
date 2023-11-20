@@ -6,8 +6,8 @@
 #include <iostream>
 #include <thread>
 #include "io/arguments.h"
-#include "scene.h"
 #include "io/ppm.h"
+#include "scene.h"
 
 int main(int argc, char *argv[])
 {
@@ -31,13 +31,19 @@ int main(int argc, char *argv[])
     // while writing from another thread
     std::mutex output_mutex;
 
+    // Whether to call quits from SDL/Ctrl-C side
+    bool quit = false;
+
     // Kick off the ray tracer in a new asynchronous thread
     std::future<void> renderAsync = std::async(std::launch::async,
-        [&args, &output, &output_mutex, &scene, camera_ptr] {
+        [&args, &output, &output_mutex, &quit, &scene, camera_ptr] {
             // Loop through each pixel in the film
             std::cout << "Rendering..." << std::endl;
+            #pragma omp parallel for
             for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
                 for (int i = 0; i < camera_ptr->getFilmSize().x(); i++) {
+                    if (quit) break;
+
                     // Compute the ray direction for this pixel
                     Ray ray = camera_ptr->generateRay(Point2f(i, j));
 
@@ -50,9 +56,15 @@ int main(int argc, char *argv[])
                     output_mutex.unlock();
                 }
             }
+            if (quit)
+            {
+                std::cout << "Aborted. Quitting..." << std::endl;
+                return;
+            }
+
             std::cout << "Done rendering!" << std::endl;
 
-            // Write to a PPM file when the user closes the window
+            // Write to a PPM file
             output_mutex.lock();
             PPM::writePPM(output, camera_ptr->getFilmSize(), args.output_file);
             output_mutex.unlock();
@@ -107,19 +119,25 @@ int main(int argc, char *argv[])
 
             // Keep the window open and updating until the user closes it
             SDL_Event e;
-            bool quit = false;
+            
+            // Draw to screen at least once (even if render is done). To do this
+            // we keep a flag on the drawing side to indicate if it's done.
+            // We should not set this flag in the async thread because then it
+            // might already be true by this time.
             bool render_done = false;
 
             while (quit == false)
             {
+                // As long as there are events to process, process it
                 while (SDL_PollEvent(&e))
                 {
                     if (e.type == SDL_QUIT)
+                    {
                         quit = true;
+                    }
                 }
 
-                // Draw to screen at least once (even if render is done)
-                do
+                if (render_done == false)
                 {
                     // Acquire the lock on the output vector for this block
                     output_mutex.lock();
@@ -158,7 +176,7 @@ int main(int argc, char *argv[])
                     {
                         render_done = true;
                     }
-                } while (render_done == false);
+                };
             }
         }
     }

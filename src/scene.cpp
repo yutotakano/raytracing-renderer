@@ -1,4 +1,5 @@
 #include "scene.h"
+#include <iostream>
 
 Scene Scene::fromJson(const nlohmann::json &json_data)
 {
@@ -58,14 +59,6 @@ Color3f Scene::traceRay(Ray ray, float minDepth, float maxDepth, bool binary) co
     return background_color;
   }
 
-  // If intersection is too close or too far, return background color
-  // TODO: shouldn't this be within the intersect() function so we get the
-  // next closest intersection if it's below minDepth?
-  if (intersection->distance < minDepth || intersection->distance > maxDepth)
-  {
-    return background_color;
-  }
-
   // If binary mode is enabled, don't do any shading calculation, just return
   // red if there was an intersection
   if (binary)
@@ -74,7 +67,7 @@ Color3f Scene::traceRay(Ray ray, float minDepth, float maxDepth, bool binary) co
   }
 
   // Calculate color at intersection point using Phong shading model
-  // Color3f color = intersection.object->material->ambient * intersection.object->material->color;
+  Color3f color = intersection->object->material->diffuseColor;
   // for (const auto& light : lights_) {
   //   color += intersection.object->material->CalculatePhongShading(ray, intersection, *light, objects_);
   // }
@@ -83,7 +76,7 @@ Color3f Scene::traceRay(Ray ray, float minDepth, float maxDepth, bool binary) co
   // Ray reflected_ray = intersection.Reflect(ray);
   // Color reflected_color = TraceRay(reflected_ray, depth + 1);
   // color += intersection.object->material->specular * reflected_color;
-  Color3f color = Color3f(0.f, 0.5f, 0.f);
+  // Color3f color = Color3f(0.f, 0.5f, 0.f);
 
   return color;
 }
@@ -105,6 +98,7 @@ std::optional<Intersection> Scene::intersect(const Ray ray, float minDepth, floa
         // to the previous closest intersection (if any)
         if (!closest_intersection.has_value() || intersection->distance < closest_intersection->distance)
         {
+          intersection->object = object;
           closest_intersection = intersection;
         }
       }
