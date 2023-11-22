@@ -4,15 +4,26 @@
 #include <fstream>
 #include <future>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <thread>
 #include "io/arguments.h"
 #include "io/ppm.h"
 #include "scene.h"
 #include "tracer/tracer.h"
 
-std::string getCurrentTime()
+/**
+ * @brief Returns a string with the current time in log-friendly format, followed by a colon and a
+ * space. Use as prefix for log messages.
+ *
+ * @return std::string Prefix to use for log messages.
+ */
+std::string currentTimePrefix()
 {
-  return std::to_string(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())) + ": ";
+  auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  std::stringstream ss;
+  ss << std::put_time(std::localtime(&now), "%Y-%m-%d %X");
+  return ss.str() + ": ";
 }
 
 int main(int argc, char *argv[])
@@ -46,7 +57,7 @@ int main(int argc, char *argv[])
     [&args, &output, &output_mutex, &quit, &scene, tracer_ptr, camera_ptr]
     {
       // Loop through each pixel in the film
-      std::cout << getCurrentTime() << "Rendering..." << std::endl;
+      std::cout << currentTimePrefix() << "Rendering..." << std::endl;
       #pragma omp parallel for
       for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
         for (int i = 0; i < camera_ptr->getFilmSize().x(); i++) {
@@ -66,18 +77,18 @@ int main(int argc, char *argv[])
       }
       if (quit)
       {
-        std::cout << getCurrentTime() << "Aborted. Quitting..." << std::endl;
+        std::cout << currentTimePrefix() << "Aborted. Quitting..." << std::endl;
         return;
       }
 
-      std::cout << getCurrentTime() << "Done rendering!" << std::endl;
+      std::cout << currentTimePrefix() << "Done rendering!" << std::endl;
 
       // Write to a PPM file
       output_mutex.lock();
       PPM::writePPM(output, camera_ptr->getFilmSize(), args.output_file);
       output_mutex.unlock();
 
-      std::cout << getCurrentTime() << "Wrote to " << args.output_file << std::endl;
+      std::cout << currentTimePrefix() << "Wrote to " << args.output_file << std::endl;
     }
   );
 
