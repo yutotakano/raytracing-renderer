@@ -9,7 +9,9 @@ CXXFLAGS = -std=c++17 -Wall -Ofast
 CXX_SRCS := $(shell find src -name "*.cpp")
 CXX_OBJS := ${patsubst src/%.cpp,build/%.o,${CXX_SRCS}}
 
-.PHONY: main clean
+.PHONY: run clean
+
+run: main
 
 main: $(CXX_OBJS)
 	@echo "Building executable..."
