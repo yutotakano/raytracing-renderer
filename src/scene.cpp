@@ -80,3 +80,13 @@ Color3f Scene::getBackgroundColor() const
 {
   return background_color;
 }
+
+const std::vector<std::shared_ptr<Object>>& Scene::getObjects() const
+{
+  return objects;
+}
+
+const std::vector<std::shared_ptr<Light>>& Scene::getLights() const
+{
+  return lights;
+}

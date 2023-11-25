@@ -58,6 +58,16 @@ public:
    */
   Color3f getBackgroundColor() const;
 
+  /**
+   * @brief Get read-only list of objects in the scene.
+  */
+  const std::vector<std::shared_ptr<Object>>& getObjects() const;
+
+  /**
+   * @brief Get read-only list of lights in the scene.
+  */
+  const std::vector<std::shared_ptr<Light>>& getLights() const;
+
 private:
   Color3f background_color;
   std::vector<std::shared_ptr<Object>> objects;
