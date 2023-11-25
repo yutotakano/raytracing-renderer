@@ -19,12 +19,40 @@ Vector2f Vector2f::operator+(const Vector2f& other) const {
   return Vector2f(x_ + other.x_, y_ + other.y_);
 }
 
+Vector2f& Vector2f::operator+=(const Vector2f& other) {
+  x_ += other.x_;
+  y_ += other.y_;
+  return *this;
+}
+
 Vector2f Vector2f::operator-(const Vector2f& other) const {
   return Vector2f(x_ - other.x_, y_ - other.y_);
 }
 
+Vector2f& Vector2f::operator-=(const Vector2f& other) {
+  x_ -= other.x_;
+  y_ -= other.y_;
+  return *this;
+}
+
 Vector2f Vector2f::operator*(float scalar) const {
   return Vector2f(x_ * scalar, y_ * scalar);
+}
+
+Vector2f& Vector2f::operator*=(float scalar) {
+  x_ *= scalar;
+  y_ *= scalar;
+  return *this;
+}
+
+Vector2f Vector2f::operator/(float scalar) const {
+  return Vector2f(x_ / scalar, y_ / scalar);
+}
+
+Vector2f& Vector2f::operator/=(float scalar) {
+  x_ /= scalar;
+  y_ /= scalar;
+  return *this;
 }
 
 float Vector2f::dot(const Vector2f& other) const {
@@ -56,12 +84,44 @@ Vector3f Vector3f::operator+(const Vector3f& other) const {
   return Vector3f(x_ + other.x_, y_ + other.y_, z_ + other.z_);
 }
 
+Vector3f& Vector3f::operator+=(const Vector3f& other) {
+  x_ += other.x_;
+  y_ += other.y_;
+  z_ += other.z_;
+  return *this;
+}
+
 Vector3f Vector3f::operator-(const Vector3f& other) const {
   return Vector3f(x_ - other.x_, y_ - other.y_, z_ - other.z_);
 }
 
+Vector3f& Vector3f::operator-=(const Vector3f& other) {
+  x_ -= other.x_;
+  y_ -= other.y_;
+  z_ -= other.z_;
+  return *this;
+}
+
 Vector3f Vector3f::operator*(float scalar) const {
   return Vector3f(x_ * scalar, y_ * scalar, z_ * scalar);
+}
+
+Vector3f& Vector3f::operator*=(float scalar) {
+  x_ *= scalar;
+  y_ *= scalar;
+  z_ *= scalar;
+  return *this;
+}
+
+Vector3f Vector3f::operator/(float scalar) const {
+  return Vector3f(x_ / scalar, y_ / scalar, z_ / scalar);
+}
+
+Vector3f& Vector3f::operator/=(float scalar) {
+  x_ /= scalar;
+  y_ /= scalar;
+  z_ /= scalar;
+  return *this;
 }
 
 float Vector3f::dot(const Vector3f& other) const {
@@ -102,12 +162,48 @@ Vector4f Vector4f::operator+(const Vector4f& other) const {
   return Vector4f(x_ + other.x_, y_ + other.y_, z_ + other.z_, w_ + other.w_);
 }
 
+Vector4f& Vector4f::operator+=(const Vector4f& other) {
+  x_ += other.x_;
+  y_ += other.y_;
+  z_ += other.z_;
+  w_ += other.w_;
+  return *this;
+}
+
 Vector4f Vector4f::operator-(const Vector4f& other) const {
   return Vector4f(x_ - other.x_, y_ - other.y_, z_ - other.z_, w_ - other.w_);
 }
 
+Vector4f& Vector4f::operator-=(const Vector4f& other) {
+  x_ -= other.x_;
+  y_ -= other.y_;
+  z_ -= other.z_;
+  w_ -= other.w_;
+  return *this;
+}
+
 Vector4f Vector4f::operator*(float scalar) const {
   return Vector4f(x_ * scalar, y_ * scalar, z_ * scalar, w_ * scalar);
+}
+
+Vector4f& Vector4f::operator*=(float scalar) {
+  x_ *= scalar;
+  y_ *= scalar;
+  z_ *= scalar;
+  w_ *= scalar;
+  return *this;
+}
+
+Vector4f Vector4f::operator/(float scalar) const {
+  return Vector4f(x_ / scalar, y_ / scalar, z_ / scalar, w_ / scalar);
+}
+
+Vector4f& Vector4f::operator/=(float scalar) {
+  x_ /= scalar;
+  y_ /= scalar;
+  z_ /= scalar;
+  w_ /= scalar;
+  return *this;
 }
 
 float Vector4f::dot(const Vector4f& other) const {

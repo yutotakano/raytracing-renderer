@@ -20,8 +20,13 @@ public:
   float length() const;
 
   Vector2f operator+(const Vector2f& other) const;
+  Vector2f& operator+=(const Vector2f& other);
   Vector2f operator-(const Vector2f& other) const;
+  Vector2f& operator-=(const Vector2f& other);
   Vector2f operator*(float scalar) const;
+  Vector2f& operator*=(float scalar);
+  Vector2f operator/(float scalar) const;
+  Vector2f& operator/=(float scalar);
 
   float dot(const Vector2f& other) const;
   float cross(const Vector2f& other) const;
@@ -64,8 +69,13 @@ public:
   float length() const;
 
   Vector3f operator+(const Vector3f& other) const;
+  Vector3f& operator+=(const Vector3f& other);
   Vector3f operator-(const Vector3f& other) const;
+  Vector3f& operator-=(const Vector3f& other);
   Vector3f operator*(float scalar) const;
+  Vector3f& operator*=(float scalar);
+  Vector3f operator/(float scalar) const;
+  Vector3f& operator/=(float scalar);
 
   float dot(const Vector3f& other) const;
   Vector3f cross(const Vector3f& other) const;
@@ -113,8 +123,13 @@ public:
   float length() const;
 
   Vector4f operator+(const Vector4f& other) const;
+  Vector4f& operator+=(const Vector4f& other);
   Vector4f operator-(const Vector4f& other) const;
+  Vector4f& operator-=(const Vector4f& other);
   Vector4f operator*(float scalar) const;
+  Vector4f& operator*=(float scalar);
+  Vector4f operator/(float scalar) const;
+  Vector4f& operator/=(float scalar);
 
   float dot(const Vector4f& other) const;
 
