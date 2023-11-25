@@ -76,7 +76,7 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
       float projected_y = (intersection_point - center).dot(axis) / axis.dot(axis);
 
       // Check if the intersection point is within the height of the cylinder
-      if (projected_y >= -height / 2 && projected_y <= height / 2)
+      if (projected_y >= -height && projected_y <= height)
       {
         Intersection i
           {
@@ -98,7 +98,7 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
       float projected_y = (intersection_point - center).dot(axis) / axis.dot(axis);
 
       // Check if the intersection point is within the height of the cylinder
-      if (projected_y >= -height / 2 && projected_y <= height / 2)
+      if (projected_y >= -height && projected_y <= height)
       {
         Intersection i
           {
