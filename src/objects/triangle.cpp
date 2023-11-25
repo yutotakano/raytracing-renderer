@@ -66,7 +66,7 @@ std::optional<Intersection> Triangle::intersect(const Ray ray, float minDepth, f
 
   float t = f * edge2.dot(q);
 
-  if (t > EPSILON)
+  if (t > EPSILON && t >= minDepth && t <= maxDepth)
   {
     Point3f intersection_point = ray.origin + ray.direction * t;
     Vector3f normal = edge1.cross(edge2).normalized();
