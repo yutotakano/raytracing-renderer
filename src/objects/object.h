@@ -3,7 +3,7 @@
 
 #include <optional>
 #include <json/json.hpp>
-#include "material.h"
+#include "../materials/material.h"
 #include "../vector.h"
 #include "../intersection.h"
 #include "../ray.h"

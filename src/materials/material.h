@@ -2,7 +2,7 @@
 #define MATERIAL_H
 
 #include "../vector.h"
-#include "../texture.h"
+#include "../materials/texture.h"
 #include <optional>
 #include <json/json.hpp>
 
