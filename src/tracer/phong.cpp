@@ -32,9 +32,17 @@ Color3f Phong::traceRay(const Scene scene, Ray ray, float minDepth, float maxDep
 
   // Calculate color at intersection point using Blinn-Phong shading model
 
+  // For diffuse color (used for ambient light too, so pre-calculated), we use
+  // the object's diffuse color only if there is no texture, otherwise we use
+  // the texture color at the intersection point
+  Color3f diffuse_color = intersection->object->material->diffuseColor;
+  if (intersection->object->material->texture.has_value()) {
+    diffuse_color = intersection->object->material->texture->getColorAtUV(intersection->uv);
+  }
+
   // First add ambient light, which we estimate as the diffuse color multiplied
   // by the background color element-wise
-  Color3f color = intersection->object->material->diffuseColor * scene.getBackgroundColor();
+  Color3f color = diffuse_color * scene.getBackgroundColor();
 
   // Loop through all lights in the scene and add their contribution
   for (const auto& light : scene.getLights()) {
@@ -55,14 +63,6 @@ Color3f Phong::traceRay(const Scene scene, Ray ray, float minDepth, float maxDep
     float specular_intensity = std::max(intersection->normal.dot(half_vector), 0.0f);
     float specular_power = intersection->object->material->specularExponent;
     Color3f specular_color = intersection->object->material->specularColor;
-
-    // For diffuse color, we use the object's diffuse color only if there is no
-    // texture, otherwise we use the texture color at the intersection point
-    Color3f diffuse_color = intersection->object->material->diffuseColor;
-    if (intersection->object->material->texture.has_value()) {
-      
-      diffuse_color = intersection->object->material->texture->getColorAtUV(intersection->uv);
-    }
     float diffuse_intensity = std::max(intersection->normal.dot(light_direction), 0.0f);
 
     float ks = intersection->object->material->ks;
