@@ -68,7 +68,12 @@ Color3f Phong::traceRay(const Scene scene, Ray ray, float minDepth, float maxDep
     float ks = intersection->object->material->ks;
     float kd = intersection->object->material->kd;
 
-    color += (specular_color * std::pow(specular_intensity, specular_power) * ks + diffuse_color * diffuse_intensity * kd) * light->intensity;
+    // Blinn-Phong light intensity needs to be scaled by the inverse square of
+    // the distance to the light source for realistic falloff (this is not
+    // physically accurate, but neither is the Blinn-Phong model to begin with)
+    float distanceSquared = std::pow((light->position - intersection->point).length(), 2);
+
+    color += (specular_color * std::pow(specular_intensity, specular_power) * ks + diffuse_color * diffuse_intensity * kd) * light->intensity / distanceSquared;
   }
 
   return color;
