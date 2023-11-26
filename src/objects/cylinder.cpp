@@ -61,11 +61,20 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
     float distance_squared = (intersection_point - center).dot(intersection_point - center);
     if (distance_squared <= radius * radius)
     {
+      // Calculate UV coordinates
+      Vector3f cap_center_to_point = intersection_point - (center - axis * height);
+      Vector3f projected_to_cap = cap_center_to_point - axis * cap_center_to_point.dot(axis);
+
       Intersection i
         {
           .distance = t_cap1,
           .point = intersection_point,
-          .normal = (axis * -1.f).normalized()
+          .normal = (axis * -1.f).normalized(),
+          // Bottom cap should map to the bottom quarter of the texture
+          .uv = Vector2f(
+            (projected_to_cap.x() / (2.f * radius) + 0.5f) * 0.25f,
+            (projected_to_cap.z() / (2.f * radius) + 0.5f) * 0.25f + 0.75f
+          )
         };
 
       return i;
@@ -80,11 +89,20 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
     float distance_squared = (intersection_point - center - axis * height).dot(intersection_point - center - axis * height);
     if (distance_squared <= radius * radius)
     {
+      // Calculate UV coordinates
+      Vector3f cap_center_to_point = intersection_point - (center - axis * height);
+      Vector3f projected_to_cap = cap_center_to_point - axis * cap_center_to_point.dot(axis);
+
       Intersection i
         {
           .distance = t_cap2,
           .point = intersection_point,
-          .normal = axis.normalized()
+          .normal = axis.normalized(),
+          // Top cap should map to the top quarter of the texture
+          .uv = Vector2f(
+            (projected_to_cap.x() / (2.f * radius) + 0.5f) * 0.25f,
+            (projected_to_cap.z() / (2.f * radius) + 0.5f) * 0.25f
+          )
         };
 
       return i;
@@ -116,16 +134,25 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
       Point3f intersection_point = ray.origin + ray.direction * t1;
 
       // Project onto the axis of the cylinder
-      float projected_y = (intersection_point - center).dot(axis) / axis.dot(axis);
+      float projected_y = (intersection_point - center).dot(axis);
 
       // Check if the intersection point is within the height of the cylinder
       if (projected_y >= -height && projected_y <= height)
       {
+        // Calculate UV coordinates
+        Vector3f center_axis_to_itx = (intersection_point - center) - axis * projected_y;
+        float theta = atan2(center_axis_to_itx.z(), center_axis_to_itx.x());
+
         Intersection i
           {
             .distance = t1,
             .point = intersection_point,
-            .normal = (intersection_point - center - (axis * projected_y)).normalized()
+            .normal = (intersection_point - center - (axis * projected_y)).normalized(),
+            // Calculate UV coordinates and map to the middle half of the texture
+            .uv = Vector2f(
+              theta / (2.f * M_PI) + 0.5f,
+              ((intersection_point - center).dot(axis) / (height * 2)) * 0.5f + 0.25f
+            )
           };
 
         return i;
@@ -138,16 +165,25 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
       Point3f intersection_point = ray.origin + ray.direction * t2;
 
       // Project onto the axis of the cylinder
-      float projected_y = (intersection_point - center).dot(axis) / axis.dot(axis);
+      float projected_y = (intersection_point - center).dot(axis);
 
       // Check if the intersection point is within the height of the cylinder
       if (projected_y >= -height && projected_y <= height)
       {
+        // Calculate UV coordinates
+        Vector3f center_axis_to_itx = (intersection_point - center) - axis * projected_y;
+        float theta = atan2(center_axis_to_itx.z(), center_axis_to_itx.x());
+
         Intersection i
           {
             .distance = t2,
             .point = intersection_point,
-            .normal = (intersection_point - center - (axis * projected_y)).normalized()
+            .normal = (intersection_point - center - (axis * projected_y)).normalized(),
+            // Calculate UV coordinates and map to the middle half of the texture
+            .uv = Vector2f(
+              theta / (2.f * M_PI) + 0.5f,
+              ((intersection_point - center).dot(axis) / (height * 2)) * 0.5f + 0.25f
+            )
           };
 
         return i;
