@@ -2,7 +2,8 @@
 #include <iostream>
 #include <fstream>
 
-void PPM::writePPM(const std::vector<Color3f>& data, Vector2f imageSize, const std::string& filename) {
+void PPM::writePPM(const std::vector<Color3f>& data, Vector2f imageSize, const std::string& filename)
+{
   std::ofstream file(filename, std::ios::out | std::ios::binary);
   if (!file.is_open()) {
     std::cerr << "Error: Could not open file " << filename << " for writing." << std::endl;
@@ -25,3 +26,38 @@ void PPM::writePPM(const std::vector<Color3f>& data, Vector2f imageSize, const s
 
   file.close();
 };
+
+std::pair<std::vector<Color3f>, Vector2f> PPM::readPPM(const std::string& filename)
+{
+  std::ifstream file(filename, std::ios::in | std::ios::binary);
+  if (!file.is_open()) {
+    std::cerr << "Error: Could not open file " << filename << " for reading." << std::endl;
+    return {};
+  }
+
+  std::string magicNumber;
+  int width, height, maxValue;
+  file >> magicNumber >> width >> height >> maxValue;
+
+  if (magicNumber != "P6") {
+    std::cerr << "Error: Invalid PPM file format." << std::endl;
+    return {};
+  }
+
+  Vector2f imageSize(width, height);
+
+  std::vector<Color3f> data(width * height);
+
+  for (int i = 0; i < width * height; i++) {
+    unsigned char r, g, b;
+    file.read(reinterpret_cast<char*>(&r), sizeof(unsigned char));
+    file.read(reinterpret_cast<char*>(&g), sizeof(unsigned char));
+    file.read(reinterpret_cast<char*>(&b), sizeof(unsigned char));
+
+    data[i] = Color3f(r / 255.0f, g / 255.0f, b / 255.0f);
+  }
+
+  file.close();
+
+  return std::make_pair(data, imageSize);
+}
