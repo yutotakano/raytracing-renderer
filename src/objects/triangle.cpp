@@ -71,11 +71,19 @@ std::optional<Intersection> Triangle::intersect(const Ray ray, float minDepth, f
     Point3f intersection_point = ray.origin + ray.direction * t;
     Vector3f normal = edge1.cross(edge2).normalized();
 
+    // Calculate the third barycentric coordinate
+    float w = 1 - u - v;
+
+    // Interpolate the UV coordinates of the vertices
+    float u_uv = w * u + u * u + v * u;
+    float v_uv = w * v + u * v + v * v;
+
     Intersection i
       {
         .distance = t,
         .point = intersection_point,
-        .normal = normal
+        .normal = normal,
+        .uv = Point2f(u_uv, v_uv),
       };
 
     return i;
