@@ -52,6 +52,8 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
   // caps)
 
   // Check if the ray intersects with the caps of the cylinder
+
+  // Bottom Cap
   float t_cap1 = (center - axis * height - ray.origin).dot(axis) / ray.direction.dot(axis);
   if (t_cap1 > minDepth && t_cap1 < maxDepth)
   {
@@ -63,13 +65,14 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
         {
           .distance = t_cap1,
           .point = intersection_point,
-          .normal = (intersection_point - center).normalized()
+          .normal = (axis * -1.f).normalized()
         };
 
       return i;
     }
   }
 
+  // Top Cap
   float t_cap2 = (center + axis * height - ray.origin).dot(axis) / ray.direction.dot(axis);
   if (t_cap2 > minDepth && t_cap2 < maxDepth)
   {
@@ -81,7 +84,7 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
         {
           .distance = t_cap2,
           .point = intersection_point,
-          .normal = (intersection_point - center - axis * height).normalized()
+          .normal = axis.normalized()
         };
 
       return i;
