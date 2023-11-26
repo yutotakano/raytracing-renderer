@@ -37,7 +37,7 @@ Cylinder Cylinder::fromJson(const nlohmann::json &json_data)
   return Cylinder(center, axis, radius, height, material);
 }
 
-std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, float maxDepth) const
+std::optional<Intersection> Cylinder::intersect(const Ray &ray, float minDepth, float maxDepth) const
 {
   // Infinite Cylinder equation:
   // || (p - c) - ((p - c) . a) * a || = r
@@ -192,4 +192,26 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
   }
 
   return std::nullopt;
+}
+
+BoundingBox Cylinder::getBoundingBox() const
+{
+  // Calculate the two end points of the cylinder
+  Vector3f axisDirection = axis.normalized();
+  Point3f p1 = center - axisDirection * height;
+  Point3f p2 = center + axisDirection * height;
+
+  // Calculate the min and max points of the bounding box
+  Point3f min = Point3f(
+    std::min(p1.x(), p2.x()) - radius,
+    std::min(p1.y(), p2.y()) - radius,
+    std::min(p1.z(), p2.z()) - radius
+  );
+  Point3f max = Point3f(
+    std::max(p1.x(), p2.x()) + radius,
+    std::max(p1.y(), p2.y()) + radius,
+    std::max(p1.z(), p2.z()) + radius
+  );
+
+  return BoundingBox(min, max);
 }

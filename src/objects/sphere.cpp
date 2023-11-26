@@ -27,7 +27,7 @@ Sphere Sphere::fromJson(const nlohmann::json &json_data)
   return Sphere(center, radius, material);
 }
 
-std::optional<Intersection> Sphere::intersect(const Ray ray, float minDepth, float maxDepth) const
+std::optional<Intersection> Sphere::intersect(const Ray &ray, float minDepth, float maxDepth) const
 {
   Vector3f oc = ray.origin - center;
   float a = ray.direction.dot(ray.direction);
@@ -61,4 +61,9 @@ std::optional<Intersection> Sphere::intersect(const Ray ray, float minDepth, flo
       .uv = Point2f(0.5 + std::atan2(normal.z(), normal.x()) / (2 * M_PI), 0.5 - std::asin(normal.y()) / M_PI)
     };
   return i;
+}
+
+BoundingBox Sphere::getBoundingBox() const
+{
+  return BoundingBox(center - Vector3f(radius, radius, radius), center + Vector3f(radius, radius, radius));
 }

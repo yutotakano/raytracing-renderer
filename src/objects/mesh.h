@@ -14,7 +14,9 @@ public:
   Mesh(Point3f center, std::vector<Triangle> triangles, std::optional<Material> material);
   static Mesh fromJson(const nlohmann::json &json_data);
 
-  std::optional<Intersection> intersect(const Ray ray, float minDepth, float maxDepth) const override;
+  std::optional<Intersection> intersect(const Ray &ray, float minDepth, float maxDepth) const override;
+
+  BoundingBox getBoundingBox() const override;
 
 private:
   Point3f center;

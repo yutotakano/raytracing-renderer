@@ -45,10 +45,10 @@ void Scene::addLight(std::shared_ptr<Light> light)
 void Scene::buildBVH()
 {
   // Build BVH acceleration structure for querying objects in the scene
-  // bvh = BVH(objects, lights);
+  bvh = BVH(objects, lights);
 }
 
-std::optional<Intersection> Scene::intersect(const Ray ray, float minDepth, float maxDepth) const
+std::optional<Intersection> Scene::intersect(const Ray &ray, float minDepth, float maxDepth) const
 {
   // Find closest intersection with an object in the scene
   if (!bvh.has_value())
@@ -73,7 +73,7 @@ std::optional<Intersection> Scene::intersect(const Ray ray, float minDepth, floa
 
     return closest_intersection;
   }
-  return Intersection();
+  return bvh->intersect(ray, minDepth, maxDepth);
 }
 
 Color3f Scene::getBackgroundColor() const

@@ -13,7 +13,9 @@ public:
   Cylinder(Point3f center, Vector3f axis, float radius, float height, std::optional<Material> material);
   static Cylinder fromJson(const nlohmann::json &json_data);
 
-  std::optional<Intersection> intersect(const Ray ray, float minDepth, float maxDepth) const override;
+  std::optional<Intersection> intersect(const Ray &ray, float minDepth, float maxDepth) const override;
+
+  BoundingBox getBoundingBox() const override;
 
   Point3f center;
   Vector3f axis;

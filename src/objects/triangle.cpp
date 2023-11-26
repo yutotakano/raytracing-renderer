@@ -73,7 +73,7 @@ Triangle Triangle::fromJson(const nlohmann::json &json_data)
   return Triangle(v0, v1, v2, material);
 }
 
-std::optional<Intersection> Triangle::intersect(const Ray ray, float minDepth, float maxDepth) const
+std::optional<Intersection> Triangle::intersect(const Ray &ray, float minDepth, float maxDepth) const
 {
   Vector3f edge1 = v1 - v0;
   Vector3f edge2 = v2 - v0;
@@ -144,4 +144,17 @@ std::optional<Intersection> Triangle::intersect(const Ray ray, float minDepth, f
   }
 
   return std::nullopt;
+}
+
+BoundingBox Triangle::getBoundingBox() const
+{
+  float min_x = std::min(v0.x(), std::min(v1.x(), v2.x()));
+  float min_y = std::min(v0.y(), std::min(v1.y(), v2.y()));
+  float min_z = std::min(v0.z(), std::min(v1.z(), v2.z()));
+
+  float max_x = std::max(v0.x(), std::max(v1.x(), v2.x()));
+  float max_y = std::max(v0.y(), std::max(v1.y(), v2.y()));
+  float max_z = std::max(v0.z(), std::max(v1.z(), v2.z()));
+
+  return BoundingBox(Point3f(min_x, min_y, min_z), Point3f(max_x, max_y, max_z));
 }

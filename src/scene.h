@@ -9,7 +9,7 @@
 #include "vector.h"
 #include "ray.h"
 #include "intersection.h"
-#include "bvh.h"
+#include "bvh/bvh.h"
 
 /**
  * @brief Represents a scene, containing objects and lights. Includes an
@@ -50,7 +50,7 @@ public:
    * @param maxDepth Maximum ray length for intersection checks
    * @return Optional intersection object
    */
-  std::optional<Intersection> intersect(const Ray ray, float minDepth, float maxDepth) const;
+  std::optional<Intersection> intersect(const Ray &ray, float minDepth, float maxDepth) const;
 
   /**
    * @brief Get the background color of the scene.

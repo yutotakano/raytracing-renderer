@@ -15,7 +15,9 @@ public:
   Triangle(Point3f v0, Point3f v1, Point3f v2, Point3f uv0, Point3f uv2, Point3f uv3, Vector3f n0, Vector3f n1, Vector3f n2, std::optional<Material> material);
   static Triangle fromJson(const nlohmann::json &json_data);
 
-  std::optional<Intersection> intersect(const Ray ray, float minDepth, float maxDepth) const override;
+  std::optional<Intersection> intersect(const Ray &ray, float minDepth, float maxDepth) const override;
+
+  BoundingBox getBoundingBox() const override;
 
 private:
   Point3f v0;

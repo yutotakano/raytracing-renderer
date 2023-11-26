@@ -192,6 +192,14 @@ Vector3f Vector3f::clamp(const Vector3f& vec, float min, float max) {
           std::clamp(vec.z_, min, max));
 }
 
+float Vector3f::operator[](int index) const {
+  if (index < 0 || index > 2) {
+    throw std::out_of_range("Vector3f index out of range");
+  }
+  
+  return (&x_)[index];
+}
+
 
 /** Vector4f */
 
