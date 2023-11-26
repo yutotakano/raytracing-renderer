@@ -37,7 +37,9 @@ std::pair<std::vector<Color3f>, Vector2f> PPM::readPPM(const std::string& filena
 
   std::string magicNumber;
   int width, height, maxValue;
-  file >> magicNumber >> width >> height >> maxValue;
+  file >> magicNumber >> width >> height >> maxValue >> std::ws;
+
+  float maxValueFloat = static_cast<float>(maxValue);
 
   if (magicNumber != "P6") {
     std::cerr << "Error: Invalid PPM file format." << std::endl;
@@ -54,7 +56,7 @@ std::pair<std::vector<Color3f>, Vector2f> PPM::readPPM(const std::string& filena
     file.read(reinterpret_cast<char*>(&g), sizeof(unsigned char));
     file.read(reinterpret_cast<char*>(&b), sizeof(unsigned char));
 
-    data[i] = Color3f(r / 255.0f, g / 255.0f, b / 255.0f);
+    data[i] = Color3f(r / maxValueFloat, g / maxValueFloat, b / maxValueFloat);
   }
 
   file.close();
