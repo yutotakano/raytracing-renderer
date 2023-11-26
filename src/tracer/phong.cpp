@@ -4,19 +4,19 @@
 #include "../scene.h"
 #include <iostream>
 
-Phong::Phong(int nbounces) : Tracer(1), nbounces(nbounces)
+Phong::Phong(int bounceCount) : Tracer(1), bounceCount(bounceCount)
 {
 }
 
 Phong Phong::fromJson(const nlohmann::json &json_data)
 {
   // By default just once bounce
-  int nbounces = 1;
+  int bounceCount = 1;
   if (json_data.contains("nbounces"))
   {
-    nbounces = json_data["nbounces"];
+    bounceCount = json_data["nbounces"];
   }
-  return Phong(nbounces);
+  return Phong(bounceCount);
 }
 
 Color3f Phong::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const
@@ -27,7 +27,7 @@ Color3f Phong::traceRay(const Scene &scene, const Ray &ray, float minDepth, floa
 Color3f Phong::traceRayRecursive(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, int bounce) const
 {
   // Abort early if we've reached the maximum number of bounces already
-  if (bounce > nbounces)
+  if (bounce > bounceCount)
   {
     return scene.getBackgroundColor();
   }
@@ -88,7 +88,7 @@ Color3f Phong::traceRayRecursive(const Scene &scene, const Ray &ray, float minDe
   }
 
   // Add refraction contribution
-  if (intersection->object->material->isRefractive && bounce < nbounces)
+  if (intersection->object->material->isRefractive && bounce < bounceCount)
   {
     // Calculate the refracted ray direction, adapted from:
     // https://paulbourke.net/geometry/reflected/

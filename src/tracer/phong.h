@@ -26,7 +26,7 @@ private:
   */
   Color3f traceRayRecursive(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, int bounce) const;
 
-  int nbounces;
+  int bounceCount;
 };
 
 #endif // PHONG_H

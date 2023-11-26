@@ -13,7 +13,7 @@
 class Tracer
 {
 public:
-  Tracer(int nsamples);
+  Tracer(int sampleCount);
   virtual ~Tracer() = default;
 
   static std::unique_ptr<Tracer> fromJson(const nlohmann::json &json_data);
@@ -34,10 +34,10 @@ public:
    * @brief Get the number of samples per pixel for this tracer.
    * @return Number of samples per pixel
    */
-  int getSampleCount() const { return nsamples; }
+  int getSampleCount() const { return sampleCount; }
 
 protected:
-  int nsamples;
+  int sampleCount;
 };
 
 #endif // TRACER_H

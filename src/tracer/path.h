@@ -9,14 +9,14 @@
 class Path : public Tracer
 {
 public:
-  Path(int bounces, int nsamples);
+  Path(int bounces, int sampleCount);
   static Path fromJson(const nlohmann::json &json_data);
 
   Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const override;
 
 private:
-  int nbounces;
-  int nsamples;
+  int bounceCount;
+  int sampleCount;
 };
 
 #endif // PATH_H

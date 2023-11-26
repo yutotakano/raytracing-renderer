@@ -2,7 +2,7 @@
 #include "binary.h"
 #include "phong.h"
 
-Tracer::Tracer(int nsamples) : nsamples(nsamples)
+Tracer::Tracer(int sampleCount) : sampleCount(sampleCount)
 {
 }
 
