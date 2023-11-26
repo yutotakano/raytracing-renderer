@@ -10,7 +10,15 @@ class Tonemapper
 {
 public:
   /**
-   * @brief Applies the tonemapping function to a given value.
+   * @brief Applies a linear tonemapping function to a given value.
+   * @param value The color to tonemap.
+   * @param exposure The exposure value.
+   * @return The tonemapped color.
+  */
+  static Color3f tonemapLinear(Color3f value, float exposure);
+
+  /**
+   * @brief Applies a modified ACES tonemapping function to a given value.
    * @param value The color to tonemap.
    * @param exposure The exposure value.
    * @return The tonemapped color.

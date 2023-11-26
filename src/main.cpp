@@ -70,8 +70,16 @@ int main(int argc, char *argv[])
           // Compute the color for this pixel
           Color3f pixel_color = tracer_ptr->traceRay(scene, ray, 0, 1000);
 
-          // Tonemap
-          pixel_color = Tonemapper::tonemapACESFitted(pixel_color, camera_ptr->getExposure());
+          // Tonemap using the Tonemapper implementation (default is ACES Fitted,
+          // but can be changed via command line arguments)
+          if (args.tonemap == "linear")
+          {
+            pixel_color = Tonemapper::tonemapLinear(pixel_color, camera_ptr->getExposure());
+          }
+          else if (args.tonemap == "aces_fitted")
+          {
+            pixel_color = Tonemapper::tonemapACESFitted(pixel_color, camera_ptr->getExposure());
+          }
 
           // Store the color in the output vector
           output_mutex.lock();

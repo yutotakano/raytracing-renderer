@@ -27,6 +27,19 @@ Arguments::Arguments(int argc, char *argv[])
       }
       output_file = arguments[i];
     }
+    else if (arguments[i] == "--tonemap")
+    {
+      i++;
+      if (i >= argc)
+      {
+        throw std::invalid_argument("Missing --tonemap value.");
+      }
+      if (arguments[i] != "aces_fitted" && arguments[i] != "linear")
+      {
+        throw std::invalid_argument("Invalid --tonemap value, should be any of: aces_fitted, linear.");
+      }
+      tonemap = arguments[i];
+    }
   }
 
   if (input_file.empty())

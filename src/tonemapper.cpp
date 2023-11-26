@@ -1,5 +1,10 @@
 #include "tonemapper.h"
 
+Color3f Tonemapper::tonemapLinear(Color3f color, float exposure)
+{
+  return Color3f::clamp(color * exposure, 0.0f, 1.0f);
+}
+
 // Adapted from https://github.com/godotengine/godot/pull/52477/files,
 // which is licensed under the MIT license.
 Color3f Tonemapper::tonemapACESFitted(Color3f color, float exposure)
