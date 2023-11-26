@@ -193,4 +193,3 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
 
   return std::nullopt;
 }
-
