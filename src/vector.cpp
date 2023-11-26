@@ -186,6 +186,12 @@ Vector3f Vector3f::normalized() const {
   return Vector3f(x_ / len, y_ / len, z_ / len);
 }
 
+Vector3f Vector3f::clamp(const Vector3f& vec, float min, float max) {
+  return Vector3f(std::clamp(vec.x_, min, max),
+          std::clamp(vec.y_, min, max),
+          std::clamp(vec.z_, min, max));
+}
+
 
 /** Vector4f */
 
@@ -330,6 +336,17 @@ Matrix3f Matrix3f::operator*(const Matrix3f& other) const {
   return result;
 }
 
+Matrix3f Matrix3f::transposed() const {
+  Matrix3f result;
+  for (int i = 0; i < 3; ++i) {
+    for (int j = i; j < 3; ++j) {
+      result(i, j) = (*this)(j, i);
+      result(j, i) = (*this)(i, j);
+    }
+  }
+  return result;
+}
+
 
 /** Matrix4f */
 
@@ -370,6 +387,17 @@ Matrix4f Matrix4f::operator*(const Matrix4f& other) const {
         sum += (*this)(i, k) * other(k, j);
       }
       result(i, j) = sum;
+    }
+  }
+  return result;
+}
+
+Matrix4f Matrix4f::transposed() const {
+  Matrix4f result;
+  for (int i = 0; i < 4; ++i) {
+    for (int j = i; j < 4; ++j) {
+      result(i, j) = (*this)(j, i);
+      result(j, i) = (*this)(i, j);
     }
   }
   return result;

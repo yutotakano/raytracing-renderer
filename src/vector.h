@@ -92,6 +92,8 @@ public:
 
   Vector3f normalized() const;
 
+  static Vector3f clamp(const Vector3f& vec, float min, float max);
+
 private:
   float x_;
   float y_;
@@ -184,6 +186,8 @@ public:
   Vector3f operator*(const Vector3f& vec) const;
   Matrix3f operator*(const Matrix3f& other) const;
 
+  Matrix3f transposed() const;
+
 private:
   float data_[9];
 };
@@ -216,6 +220,8 @@ public:
 
   Vector4f operator*(const Vector4f& vec) const;
   Matrix4f operator*(const Matrix4f& other) const;
+
+  Matrix4f transposed() const;
 
 private:
   float data_[16];
