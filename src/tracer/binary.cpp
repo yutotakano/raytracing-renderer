@@ -12,7 +12,7 @@ Binary Binary::fromJson(const nlohmann::json &json_data)
   return Binary();
 }
 
-Color3f Binary::traceRay(const Scene scene, Ray ray, float minDepth, float maxDepth) const
+Color3f Binary::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const
 {
   // Find closest intersection with an object in the scene
   std::optional<Intersection> intersection = scene.intersect(ray, minDepth, maxDepth);

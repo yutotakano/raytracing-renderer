@@ -19,12 +19,12 @@ Phong Phong::fromJson(const nlohmann::json &json_data)
   return Phong(nbounces);
 }
 
-Color3f Phong::traceRay(const Scene scene, Ray ray, float minDepth, float maxDepth) const
+Color3f Phong::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const
 {
   return traceRayRecursive(scene, ray, minDepth, maxDepth, 0);
 }
 
-Color3f Phong::traceRayRecursive(const Scene scene, Ray ray, float minDepth, float maxDepth, int bounce) const
+Color3f Phong::traceRayRecursive(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, int bounce) const
 {
   // Abort early if we've reached the maximum number of bounces already
   if (bounce > nbounces)

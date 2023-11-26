@@ -12,7 +12,7 @@ public:
   Phong(int bounces);
   static Phong fromJson(const nlohmann::json &json_data);
 
-  Color3f traceRay(const Scene scene, const Ray ray, float minDepth, float maxDepth) const override;
+  Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const override;
 
 private:
 
@@ -24,7 +24,7 @@ private:
    * @param maxDepth Maximum ray length for intersection checks
    * @param bounce Number of bounces so far
   */
-  Color3f traceRayRecursive(const Scene scene, const Ray ray, float minDepth, float maxDepth, int bounce) const;
+  Color3f traceRayRecursive(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, int bounce) const;
 
   int nbounces;
 };

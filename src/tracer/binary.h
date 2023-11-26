@@ -12,7 +12,7 @@ public:
   Binary();
   static Binary fromJson(const nlohmann::json &json_data);
 
-  Color3f traceRay(const Scene scene, const Ray ray, float minDepth, float maxDepth) const override;
+  Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const override;
 };
 
 #endif // BINARY_H

@@ -28,7 +28,7 @@ public:
    * @param binary Whether to output a single color for intersections (red)
    * @return Color3f object
    */
-  virtual Color3f traceRay(const Scene scene, const Ray ray, float minDepth, float maxDepth) const = 0;
+  virtual Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const = 0;
 };
 
 #endif // TRACER_H
