@@ -3,7 +3,7 @@
 #include "../intersection.h"
 #include "../scene.h"
 
-Binary::Binary() : Tracer()
+Binary::Binary() : Tracer(1)
 {
 }
 

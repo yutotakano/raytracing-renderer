@@ -3,7 +3,7 @@
 #include "../intersection.h"
 #include "../scene.h"
 
-Path::Path(int nbounces, int nsamples) : Tracer(), nbounces(nbounces), nsamples(nsamples)
+Path::Path(int nbounces, int nsamples) : Tracer(nsamples), nbounces(nbounces)
 {
 }
 

@@ -13,7 +13,7 @@
 class Tracer
 {
 public:
-  Tracer();
+  Tracer(int nsamples);
   virtual ~Tracer() = default;
 
   static std::unique_ptr<Tracer> fromJson(const nlohmann::json &json_data);
@@ -29,6 +29,15 @@ public:
    * @return Color3f object
    */
   virtual Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const = 0;
+
+  /**
+   * @brief Get the number of samples per pixel for this tracer.
+   * @return Number of samples per pixel
+   */
+  int getSampleCount() const { return nsamples; }
+
+protected:
+  int nsamples;
 };
 
 #endif // TRACER_H

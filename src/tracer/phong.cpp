@@ -4,7 +4,7 @@
 #include "../scene.h"
 #include <iostream>
 
-Phong::Phong(int nbounces) : Tracer(), nbounces(nbounces)
+Phong::Phong(int nbounces) : Tracer(1), nbounces(nbounces)
 {
 }
 
