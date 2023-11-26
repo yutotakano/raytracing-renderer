@@ -39,22 +39,62 @@ Cylinder Cylinder::fromJson(const nlohmann::json &json_data)
 
 std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, float maxDepth) const
 {
-  // Calculate the direction vector of the ray
-  Vector3f ray_direction = ray.direction;
+  // Infinite Cylinder equation:
+  // || (p - c) - ((p - c) . a) * a || = r
+  // where:
+  //   p is a point on the cylinder
+  //   c is the center of the cylinder
+  //   a is the axis of the cylinder
+  //   r is the radius of the cylinder
+  //
+  // Just cap the projection of (p - c) onto a to the height of the cylinder
+  // to get a capped cylinder. (and then also check for intersections with the
+  // caps)
+
+  // Check if the ray intersects with the caps of the cylinder
+  float t_cap1 = (center - axis * height - ray.origin).dot(axis) / ray.direction.dot(axis);
+  if (t_cap1 > minDepth && t_cap1 < maxDepth)
+  {
+    Point3f intersection_point = ray.origin + ray.direction * t_cap1;
+    float distance_squared = (intersection_point - center).dot(intersection_point - center);
+    if (distance_squared <= radius * radius)
+    {
+      Intersection i
+        {
+          .distance = t_cap1,
+          .point = intersection_point,
+          .normal = (intersection_point - center).normalized()
+        };
+
+      return i;
+    }
+  }
+
+  float t_cap2 = (center + axis * height - ray.origin).dot(axis) / ray.direction.dot(axis);
+  if (t_cap2 > minDepth && t_cap2 < maxDepth)
+  {
+    Point3f intersection_point = ray.origin + ray.direction * t_cap2;
+    float distance_squared = (intersection_point - center - axis * height).dot(intersection_point - center - axis * height);
+    if (distance_squared <= radius * radius)
+    {
+      Intersection i
+        {
+          .distance = t_cap2,
+          .point = intersection_point,
+          .normal = (intersection_point - center - axis * height).normalized()
+        };
+
+      return i;
+    }
+  }
 
   // Calculate the vector from the ray origin to the center of the cylinder
   Vector3f oc = ray.origin - center;
 
-  // Calculate the dot product of the ray direction and the axis of the cylinder
-  float a = ray_direction.dot(axis);
-
-  // Calculate the dot product of the oc vector and the axis of the cylinder
-  float b = oc.dot(axis);
-
-  // Calculate the coefficients for the quadratic equation
-  float A = (ray_direction - axis * a).dot(ray_direction - axis * a);
-  float B = 2.0f * (ray_direction - axis * a).dot(oc - axis * b);
-  float C = (oc - axis * b).dot(oc - axis * b) - radius * radius;
+  // Calculate the coefficients for the quadratic equation.
+  float A = ray.direction.dot(ray.direction) - pow(ray.direction.dot(axis), 2);
+  float B = 2.0f * (ray.direction.dot(oc) - ray.direction.dot(axis) * oc.dot(axis));
+  float C = oc.dot(oc) - pow(oc.dot(axis), 2) - radius * radius;
 
   // Calculate the discriminant
   float discriminant = B * B - 4.0f * A * C;
@@ -82,7 +122,7 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
           {
             .distance = t1,
             .point = intersection_point,
-            .normal = (intersection_point - center - axis * b) * (1.0f / radius)
+            .normal = (intersection_point - center - (axis * projected_y)).normalized()
           };
 
         return i;
@@ -104,7 +144,7 @@ std::optional<Intersection> Cylinder::intersect(const Ray ray, float minDepth, f
           {
             .distance = t2,
             .point = intersection_point,
-            .normal = (intersection_point - center - axis * b) * (1.0f / radius)
+            .normal = (intersection_point - center - (axis * projected_y)).normalized()
           };
 
         return i;
