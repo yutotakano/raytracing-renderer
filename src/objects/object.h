@@ -7,6 +7,7 @@
 #include "../vector.h"
 #include "../intersection.h"
 #include "../ray.h"
+#include "../bvh/boundingbox.h"
 
 /**
  * @brief Abstract class representing an object in the scene.
@@ -25,7 +26,9 @@ public:
    * @param ray The ray to intersect with.
    * @return std::optional<Intersection> The intersection with the object, if any.
    */
-  virtual std::optional<Intersection> intersect(const Ray ray, float minDepth, float maxDepth) const = 0;
+  virtual std::optional<Intersection> intersect(const Ray &ray, float minDepth, float maxDepth) const = 0;
+
+  virtual BoundingBox getBoundingBox() const = 0;
 
   std::optional<Material> material;
 };
