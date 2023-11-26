@@ -7,11 +7,27 @@ Triangle::Triangle(Point3f v0, Point3f v1, Point3f v2, std::optional<Material> m
 {
 }
 
+Triangle::Triangle(Point3f v0, Point3f v1, Point3f v2, Point3f uv0, Point3f uv1, Point3f uv2, std::optional<Material> material) : Object(material), v0(v0), v1(v1), v2(v2), uv0(uv0), uv1(uv1), uv2(uv2)
+{
+}
+
+Triangle::Triangle(Point3f v0, Point3f v1, Point3f v2, Point3f uv0, Point3f uv1, Point3f uv2, Vector3f n0, Vector3f n1, Vector3f n2, std::optional<Material> material) : Object(material), v0(v0), v1(v1), v2(v2), uv0(uv0), uv1(uv1), uv2(uv2), n0(n0), n1(n1), n2(n2)
+{
+}
+
 Triangle Triangle::fromJson(const nlohmann::json &json_data)
 {
   Point3f v0 = Point3f(0.f, 0.f, 0.f);
   Point3f v1 = Point3f(0.f, 0.f, 0.f);
   Point3f v2 = Point3f(0.f, 0.f, 0.f);
+
+  Point3f uv0 = Point3f(0.f, 0.f, 0.f);
+  Point3f uv1 = Point3f(0.f, 0.f, 0.f);
+  Point3f uv2 = Point3f(0.f, 0.f, 0.f);
+
+  Vector3f n0 = Vector3f(0.f, 0.f, 0.f);
+  Vector3f n1 = Vector3f(0.f, 0.f, 0.f);
+  Vector3f n2 = Vector3f(0.f, 0.f, 0.f);
 
   if (json_data.find("v0") != json_data.end())
   {
@@ -30,6 +46,28 @@ Triangle Triangle::fromJson(const nlohmann::json &json_data)
   if (json_data.contains("material"))
   {
     material = Material::fromJson(json_data["material"]);
+  }
+  
+
+  if (json_data.find("uv0") != json_data.end() &&
+      json_data.find("uv1") != json_data.end() &&
+      json_data.find("uv2") != json_data.end())
+  {
+    uv0 = json_data["uv0"];
+    uv1 = json_data["uv1"];
+    uv2 = json_data["uv2"];
+
+    if (json_data.find("n0") != json_data.end() &&
+        json_data.find("n1") != json_data.end() &&
+        json_data.find("n2") != json_data.end())
+    {
+      n0 = json_data["n0"];
+      n1 = json_data["n1"];
+      n2 = json_data["n2"];
+      return Triangle(v0, v1, v2, uv0, uv1, uv2, n0, n1, n2, material);
+    }
+
+    return Triangle(v0, v1, v2, uv0, uv1, uv2, material);
   }
 
   return Triangle(v0, v1, v2, material);
@@ -69,14 +107,30 @@ std::optional<Intersection> Triangle::intersect(const Ray ray, float minDepth, f
   if (t > EPSILON && t >= minDepth && t <= maxDepth)
   {
     Point3f intersection_point = ray.origin + ray.direction * t;
-    Vector3f normal = edge1.cross(edge2).normalized();
+    Vector3f normal;
+    float u_uv, v_uv;
 
-    // Calculate the third barycentric coordinate
-    float w = 1 - u - v;
+    if (uv0.has_value() && uv1.has_value() && uv2.has_value() &&
+        n0.has_value() && n1.has_value() && n2.has_value())
+    {
+      // This whole block generated from prompt:
+      // Interpolate vertex normals and UV coordinates using uv0 (uvw for vertex 0), uv1 (uvw for vertex 1) and uv2 (uvw for vertex 2) and n0 to n2. Output should be intersection with Point2f uv
+      normal = (n0.value() * (1 - u - v) + n1.value() * u + n2.value() * v).normalized();
 
-    // Interpolate the UV coordinates of the vertices
-    float u_uv = w * u + u * u + v * u;
-    float v_uv = w * v + u * v + v * v;
+      // Interpolate the UV coordinates of the vertices
+      u_uv = (uv0.value().x() * (1 - u - v) + uv1.value().x() * u + uv2.value().x() * v);
+      v_uv = (uv0.value().y() * (1 - u - v) + uv1.value().y() * u + uv2.value().y() * v);
+    }
+    else 
+    {
+      normal = edge1.cross(edge2).normalized();
+      // Calculate the third barycentric coordinate
+      float w = 1 - u - v;
+
+      // Interpolate the UV coordinates of the vertices
+      u_uv = w * u + u * u + v * u;
+      v_uv = w * v + u * v + v * v;
+    }
 
     Intersection i
       {

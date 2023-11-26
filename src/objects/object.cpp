@@ -2,6 +2,7 @@
 #include "sphere.h"
 #include "cylinder.h"
 #include "triangle.h"
+#include "mesh.h"
 
 Object::Object(std::optional<Material> material) : material(material)
 {
@@ -22,6 +23,10 @@ std::unique_ptr<Object> Object::fromJson(const nlohmann::json &json_data)
   else if (type == "triangle")
   {
     return std::make_unique<Triangle>(Triangle::fromJson(json_data));
+  }
+  else if (type == "mesh")
+  {
+    return std::make_unique<Mesh>(Mesh::fromJson(json_data));
   }
   else
   {
