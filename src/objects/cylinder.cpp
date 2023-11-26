@@ -51,61 +51,65 @@ std::optional<Intersection> Cylinder::intersect(const Ray &ray, float minDepth, 
   // to get a capped cylinder. (and then also check for intersections with the
   // caps)
 
-  // Check if the ray intersects with the caps of the cylinder
-
-  // Bottom Cap
-  float t_cap1 = (center - axis * height - ray.origin).dot(axis) / ray.direction.dot(axis);
-  if (t_cap1 > minDepth && t_cap1 < maxDepth)
+  // Check if the ray intersects with the caps of the cylinder (although only
+  // if the dot product of the ray direction and the axis is not zero, because
+  // if the ray is perfectly orthogonal to the axis, it's division by zero)
+  if (ray.direction.dot(axis) != 0)
   {
-    Point3f intersection_point = ray.origin + ray.direction * t_cap1;
-    float distance_squared = (intersection_point - center).dot(intersection_point - center);
-    if (distance_squared <= radius * radius)
+    // Bottom Cap
+    float t_cap1 = (center - axis * height - ray.origin).dot(axis) / ray.direction.dot(axis);
+    if (t_cap1 > minDepth && t_cap1 < maxDepth)
     {
-      // Calculate UV coordinates
-      Vector3f cap_center_to_point = intersection_point - (center - axis * height);
-      Vector3f projected_to_cap = cap_center_to_point - axis * cap_center_to_point.dot(axis);
+      Point3f intersection_point = ray.origin + ray.direction * t_cap1;
+      float distance_squared = (intersection_point - center).dot(intersection_point - center);
+      if (distance_squared <= radius * radius)
+      {
+        // Calculate UV coordinates
+        Vector3f cap_center_to_point = intersection_point - (center - axis * height);
+        Vector3f projected_to_cap = cap_center_to_point - axis * cap_center_to_point.dot(axis);
 
-      Intersection i
-        {
-          .distance = t_cap1,
-          .point = intersection_point,
-          .normal = (axis * -1.f).normalized(),
-          // Bottom cap should map to the bottom quarter of the texture
-          .uv = Vector2f(
-            (projected_to_cap.x() / (2.f * radius) + 0.5f) * 0.25f,
-            (projected_to_cap.z() / (2.f * radius) + 0.5f) * 0.25f + 0.75f
-          )
-        };
+        Intersection i
+          {
+            .distance = t_cap1,
+            .point = intersection_point,
+            .normal = (axis * -1.f).normalized(),
+            // Bottom cap should map to the bottom quarter of the texture
+            .uv = Vector2f(
+              (projected_to_cap.x() / (2.f * radius) + 0.5f) * 0.25f,
+              (projected_to_cap.z() / (2.f * radius) + 0.5f) * 0.25f + 0.75f
+            )
+          };
 
-      return i;
+        return i;
+      }
     }
-  }
 
-  // Top Cap
-  float t_cap2 = (center + axis * height - ray.origin).dot(axis) / ray.direction.dot(axis);
-  if (t_cap2 > minDepth && t_cap2 < maxDepth)
-  {
-    Point3f intersection_point = ray.origin + ray.direction * t_cap2;
-    float distance_squared = (intersection_point - center - axis * height).dot(intersection_point - center - axis * height);
-    if (distance_squared <= radius * radius)
+    // Top Cap
+    float t_cap2 = (center + axis * height - ray.origin).dot(axis) / ray.direction.dot(axis);
+    if (t_cap2 > minDepth && t_cap2 < maxDepth)
     {
-      // Calculate UV coordinates
-      Vector3f cap_center_to_point = intersection_point - (center - axis * height);
-      Vector3f projected_to_cap = cap_center_to_point - axis * cap_center_to_point.dot(axis);
+      Point3f intersection_point = ray.origin + ray.direction * t_cap2;
+      float distance_squared = (intersection_point - center - axis * height).dot(intersection_point - center - axis * height);
+      if (distance_squared <= radius * radius)
+      {
+        // Calculate UV coordinates
+        Vector3f cap_center_to_point = intersection_point - (center - axis * height);
+        Vector3f projected_to_cap = cap_center_to_point - axis * cap_center_to_point.dot(axis);
 
-      Intersection i
-        {
-          .distance = t_cap2,
-          .point = intersection_point,
-          .normal = axis.normalized(),
-          // Top cap should map to the top quarter of the texture
-          .uv = Vector2f(
-            (projected_to_cap.x() / (2.f * radius) + 0.5f) * 0.25f,
-            (projected_to_cap.z() / (2.f * radius) + 0.5f) * 0.25f
-          )
-        };
+        Intersection i
+          {
+            .distance = t_cap2,
+            .point = intersection_point,
+            .normal = axis.normalized(),
+            // Top cap should map to the top quarter of the texture
+            .uv = Vector2f(
+              (projected_to_cap.x() / (2.f * radius) + 0.5f) * 0.25f,
+              (projected_to_cap.z() / (2.f * radius) + 0.5f) * 0.25f
+            )
+          };
 
-      return i;
+        return i;
+      }
     }
   }
 
