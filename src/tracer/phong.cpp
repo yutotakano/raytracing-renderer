@@ -55,7 +55,14 @@ Color3f Phong::traceRay(const Scene scene, Ray ray, float minDepth, float maxDep
     float specular_intensity = std::max(intersection->normal.dot(half_vector), 0.0f);
     float specular_power = intersection->object->material->specularExponent;
     Color3f specular_color = intersection->object->material->specularColor;
+
+    // For diffuse color, we use the object's diffuse color only if there is no
+    // texture, otherwise we use the texture color at the intersection point
     Color3f diffuse_color = intersection->object->material->diffuseColor;
+    if (intersection->object->material->texture.has_value()) {
+      
+      diffuse_color = intersection->object->material->texture->getColorAtUV(intersection->uv);
+    }
     float diffuse_intensity = std::max(intersection->normal.dot(light_direction), 0.0f);
 
     float ks = intersection->object->material->ks;
