@@ -57,7 +57,8 @@ std::optional<Intersection> Sphere::intersect(const Ray ray, float minDepth, flo
     {
       .distance = t,
       .point = intersection_point,
-      .normal = normal
+      .normal = normal,
+      .uv = Point2f(0.5 + std::atan2(normal.z(), normal.x()) / (2 * M_PI), 0.5 - std::asin(normal.y()) / M_PI)
     };
   return i;
 }
