@@ -31,11 +31,19 @@ Color3f Phong::traceRay(const Scene scene, Ray ray, float minDepth, float maxDep
   }
 
   // Calculate color at intersection point using Blinn-Phong shading model
-  Color3f color = Color3f(0.f, 0.f, 0.f);
+
+  // First add ambient light, which we estimate as the diffuse color multiplied
+  // by the background color element-wise
+  Color3f color = intersection->object->material->diffuseColor * scene.getBackgroundColor();
+
+  // Loop through all lights in the scene and add their contribution
   for (const auto& light : scene.getLights()) {
-    // Check if the light is blocked
-    Ray shadow_ray = Ray(intersection->point + intersection->normal * 1.f, light->position - intersection->point);
+    // Check if the light is blocked, if so ignore it. The shadow ray is cast
+    // from a slightly offset point (using the normal) to avoid self-intersection.
+    Ray shadow_ray = Ray(intersection->point + intersection->normal * 0.0001f, light->position - intersection->point);
     std::optional<Intersection> shadow_intersection = scene.intersect(shadow_ray, 0.f, 1000.f);
+
+    // Make sure the shadow ray intersection was closer than the light
     if (shadow_intersection.has_value() && shadow_intersection->distance < (light->position - intersection->point).length()) {
       continue;
     }
@@ -48,15 +56,12 @@ Color3f Phong::traceRay(const Scene scene, Ray ray, float minDepth, float maxDep
     float specular_power = intersection->object->material->specularExponent;
     Color3f specular_color = intersection->object->material->specularColor;
     Color3f diffuse_color = intersection->object->material->diffuseColor;
-    Color3f ambient_color = Color3f(0.25f, 0.25f, 0.25f); // intersection->object->material->ambientColor;
-    float ambient_intensity = 1.f; // intersection->object->material->ambientIntensity;
     float diffuse_intensity = std::max(intersection->normal.dot(light_direction), 0.0f);
 
     float ks = intersection->object->material->ks;
     float kd = intersection->object->material->kd;
 
-    color += (ambient_color * ambient_intensity + specular_color * std::pow(specular_intensity, specular_power) * ks + diffuse_color * diffuse_intensity * kd) * light->intensity;
-  
+    color += (specular_color * std::pow(specular_intensity, specular_power) * ks + diffuse_color * diffuse_intensity * kd) * light->intensity;
   }
 
   return color;
