@@ -3,6 +3,8 @@
 
 #include "vector.h"
 
+extern const Matrix3f odt_to_rgb;
+
 /**
  * @brief Represents a tonemapper that brings [0, inf] values to [0, 1].
  */
@@ -24,6 +26,8 @@ public:
    * @return The tonemapped color.
    */
   static Color3f tonemapACESFitted(Color3f value, float exposure);
+
+  
 };
 
 #endif // TONEMAPPER_H
