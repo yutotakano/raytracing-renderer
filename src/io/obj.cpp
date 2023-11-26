@@ -40,7 +40,7 @@ std::vector<Triangle> OBJ::loadObj(std::string filename, Point3f center, float s
       float nx, ny, nz;
       iss >> nx >> ny >> nz;
       // Create a normal vector object and add it to the normals vector
-      normals.push_back(Vector3f(nx, ny, nz));
+      normals.push_back(Vector3f(nx, ny, nz).normalized());
     }
     else if (type == "vt")
     {
