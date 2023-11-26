@@ -24,3 +24,7 @@ Ray Pinhole::generateRay(Point2f filmPosition) const {
   Vector3f direction = u * (1.0f - filmPosition.x() / filmSize.x() - 0.5f) * 2.0f * halfWidth + v * (1.0f - filmPosition.y() / filmSize.y() - 0.5f) * 2.0f * halfHeight - w;
   return Ray(position, direction.normalized());
 }
+
+float Pinhole::getExposure() const {
+  return exposure;
+}

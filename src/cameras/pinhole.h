@@ -14,6 +14,8 @@ public:
 
   Ray generateRay(Point2f filmPosition) const;
 
+  float getExposure() const;
+
 private:
   Vector3f position;
   Vector3f lookAt;

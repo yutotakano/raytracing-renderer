@@ -29,6 +29,12 @@ public:
    */
   Vector2f getFilmSize() const;
 
+  /**
+   * @brief Get the exposure for this camera, used for tonemapping.
+   * @return Exposure bias
+   */
+  float getExposure() const { return 1.0f; }
+
 protected:
   Vector2f filmSize;
 };
