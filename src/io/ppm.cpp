@@ -16,9 +16,9 @@ void PPM::writePPM(const std::vector<Color3f>& data, Vector2f imageSize, const s
   file << "P6\n" << width << " " << height << "\n255\n";
 
   for (int i = 0; i < width * height; i++) {
-    file << static_cast<char>(data[i].x() * 255);
-    file << static_cast<char>(data[i].y() * 255);
-    file << static_cast<char>(data[i].z() * 255);
+    file << static_cast<unsigned char>(data[i].x() * 255);
+    file << static_cast<unsigned char>(data[i].y() * 255);
+    file << static_cast<unsigned char>(data[i].z() * 255);
   }
 
   file.close();
