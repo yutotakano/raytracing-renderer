@@ -171,6 +171,10 @@ Vector3f& Vector3f::operator/=(const Vector3f& other) {
   return *this;
 }
 
+bool Vector3f::operator==(const Vector3f& other) const {
+  return x_ == other.x_ && y_ == other.y_ && z_ == other.z_;
+}
+
 float Vector3f::dot(const Vector3f& other) const {
   return x_ * other.x_ + y_ * other.y_ + z_ * other.z_;
 }

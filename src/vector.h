@@ -87,6 +87,8 @@ public:
   Vector3f operator/(const Vector3f& other) const;
   Vector3f& operator/=(const Vector3f& other);
 
+  bool operator==(const Vector3f& other) const;
+
   float operator[](int index) const;
 
   float dot(const Vector3f& other) const;
