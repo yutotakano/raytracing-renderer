@@ -3,6 +3,10 @@
 #include "arealight.h"
 #include "sunlight.h"
 
+Light::Light(Point3f position, Color3f intensity) : position(position), intensity(intensity)
+{
+}
+
 /**
  * @brief Construct a new Light object.
 */

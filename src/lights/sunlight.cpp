@@ -1,9 +1,7 @@
 #include "sunlight.h"
 
-SunLight::SunLight(Point3f position, Color3f intensity)
+SunLight::SunLight(Point3f position, Color3f intensity) : Light(position, intensity)
 {
-  this->position = position;
-  this->intensity = intensity;
 }
 
 SunLight SunLight::fromJson(const nlohmann::json &json_data)

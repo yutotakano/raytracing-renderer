@@ -1,9 +1,7 @@
 #include "pointlight.h"
 
-PointLight::PointLight(Point3f position, Color3f intensity)
+PointLight::PointLight(Point3f position, Color3f intensity) : Light(position, intensity)
 {
-  this->position = position;
-  this->intensity = intensity;
 }
 
 PointLight PointLight::fromJson(const nlohmann::json &json_data)
