@@ -6,7 +6,7 @@ Pinhole Pinhole::fromJson(const nlohmann::json &json) {
   return Pinhole(Vector2f(json["width"], json["height"]), json["position"], json["lookAt"], json["upVector"], json["fov"], json["exposure"]);
 }
 
-Ray Pinhole::generateRay(Point2f filmPosition, const Random &sampler) const {
+Ray Pinhole::generateRay(Point2f filmPosition, Random &sampler) const {
   // filmPosition is in [0, filmSize.x] x [0, filmSize.y]
   float aspectRatio = filmSize.x() / filmSize.y();
   float halfWidth = std::tan(fov / 2.0f);

@@ -12,7 +12,7 @@ public:
   Phong(int bounces);
   static Phong fromJson(const nlohmann::json &json_data);
 
-  Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, const Random &sampler) const override;
+  Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, Random &sampler) const override;
 
 private:
 

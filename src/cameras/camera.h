@@ -23,7 +23,7 @@ public:
    * @param sampler Random sampler for any sampling
    * @return Ray from the camera origin through the given film position
    */
-  virtual Ray generateRay(Point2f filmPosition, const Random &sampler) const = 0;
+  virtual Ray generateRay(Point2f filmPosition, Random &sampler) const = 0;
 
   /**
    * @brief Get the film size for this camera.

@@ -29,7 +29,7 @@ public:
    * @param sampler Random sampler for any sampling
    * @return Color3f object
    */
-  virtual Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, const Random &sampler) const = 0;
+  virtual Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, Random &sampler) const = 0;
 
   /**
    * @brief Get the number of samples per pixel for this tracer.

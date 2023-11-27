@@ -32,7 +32,7 @@ Path Path::fromJson(const nlohmann::json &json_data)
   return Path(bounceCount, sampleCount, useRussianRoulette);
 }
 
-Color3f Path::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, const Random &sampler) const
+Color3f Path::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, Random &sampler) const
 {
 
 }

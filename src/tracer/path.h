@@ -26,7 +26,7 @@ public:
    * @param maxDepth Maximum ray length for intersection checks
    * @param sampler Random number generator
   */
-  Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, const Random &sampler) const override;
+  Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, Random &sampler) const override;
 
 private:
   int bounceCount;

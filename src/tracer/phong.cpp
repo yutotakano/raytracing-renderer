@@ -18,7 +18,7 @@ Phong Phong::fromJson(const nlohmann::json &json_data)
   return Phong(bounceCount);
 }
 
-Color3f Phong::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, const Random &sampler) const
+Color3f Phong::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, Random &sampler) const
 {
   return traceRayRecursive(scene, ray, minDepth, maxDepth, 0);
 }
