@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
   nlohmann::json json_data = nlohmann::json::parse(f);
 
   // Create the tracer, camera, and scene from the JSON data
-  std::shared_ptr<Tracer> tracer_ptr = Tracer::fromJson(json_data);
-  std::shared_ptr<Camera> camera_ptr = Camera::fromJson(json_data["camera"]);
+  std::unique_ptr<Tracer> tracer_ptr = Tracer::fromJson(json_data);
+  std::unique_ptr<Camera> camera_ptr = Camera::fromJson(json_data["camera"]);
   Scene scene = Scene::fromJson(json_data["scene"]);
   Random sampler = Random();
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
   // Kick off the ray tracer in a new asynchronous thread
   std::future<void> renderAsync = std::async(std::launch::async,
-    [&args, &output, &output_mutex, &quit, &scene, tracer_ptr, camera_ptr, &sampler]
+    [&args, &output, &output_mutex, &quit, &scene, &tracer_ptr, &camera_ptr, &sampler]
     {
       // Loop through each pixel in the film
       std::cout << currentTimePrefix() << "Rendering..." << std::endl;
