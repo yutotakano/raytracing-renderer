@@ -1,4 +1,5 @@
 #include "scene.h"
+#include "lights/arealight.h"
 #include <iostream>
 
 Scene Scene::fromJson(const nlohmann::json &json_data)

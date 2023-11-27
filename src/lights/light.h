@@ -8,6 +8,7 @@ class Light
 {
 public:
   Light(Point3f position, Color3f intensity);
+  virtual ~Light() = default;
 
   static Light fromJson(const nlohmann::json &json_data);
 

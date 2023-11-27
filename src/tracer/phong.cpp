@@ -58,16 +58,16 @@ Color3f Phong::traceRayRecursive(const Scene &scene, const Ray &ray, float minDe
   for (const auto& light : scene.getLights()) {
     // Check if the light is blocked, if so ignore it. The shadow ray is cast
     // from a slightly offset point (using the normal) to avoid self-intersection.
-    Ray shadow_ray = Ray(intersection->point + intersection->normal * 0.0001f, light->position - intersection->point);
+    Ray shadow_ray = Ray(intersection->point + intersection->normal * 0.0001f, light->getPosition() - intersection->point);
     std::optional<Intersection> shadow_intersection = scene.intersect(shadow_ray, 0.f, 1000.f);
 
     // Make sure the shadow ray intersection was closer than the light
-    if (shadow_intersection.has_value() && shadow_intersection->distance < (light->position - intersection->point).length()) {
+    if (shadow_intersection.has_value() && shadow_intersection->distance < (light->getPosition() - intersection->point).length()) {
       continue;
     }
 
     // Calculate Blinn-Phong shading contribution
-    Vector3f light_direction = (light->position - intersection->point).normalized();
+    Vector3f light_direction = (light->getPosition() - intersection->point).normalized();
     Vector3f view_direction = ray.direction.normalized() * -1.f;
     Vector3f half_vector = (light_direction + view_direction).normalized();
     float specular_intensity = std::max(intersection->normal.dot(half_vector), 0.0f);
@@ -81,9 +81,9 @@ Color3f Phong::traceRayRecursive(const Scene &scene, const Ray &ray, float minDe
     // Blinn-Phong light intensity needs to be scaled by the inverse square of
     // the distance to the light source for realistic falloff (this is not
     // physically accurate, but neither is the Blinn-Phong model to begin with)
-    float distanceSquared = std::pow((light->position - intersection->point).length(), 2);
+    float distanceSquared = std::pow((light->getPosition() - intersection->point).length(), 2);
 
-    color += (specular_color * std::pow(specular_intensity, specular_power) * ks + diffuse_color * diffuse_intensity * kd) * light->intensity / distanceSquared;
+    color += (specular_color * std::pow(specular_intensity, specular_power) * ks + diffuse_color * diffuse_intensity * kd) * light->getIntensity() / distanceSquared;
   }
 
   // Add refraction contribution

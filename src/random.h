@@ -19,6 +19,14 @@ public:
    * @return Point2f A random 2D point between (0, 0) and (1, 1).
    */
   Point2f get2D();
+
+  /**
+   * @brief Get a random integer between [min, max).
+   * @param min The minimum value.
+   * @param max The maximum value.
+   * @return int Integer between [min, max).
+  */
+  int getInt(int min, int max);
 };
 
 #endif // RANDOM_H

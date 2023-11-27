@@ -29,6 +29,11 @@ public:
   Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, Random &sampler) const override;
 
 private:
+  std::tuple<Vector3f, Vector3f, Vector3f> coordinateSystem(const Vector3f &normal) const;
+  Vector3f toLocal(const Vector3f &v, std::tuple<Vector3f, Vector3f, Vector3f> coordinateSystem) const;
+  Vector3f toWorld(const Vector3f &v, std::tuple<Vector3f, Vector3f, Vector3f> coordinateSystem) const;
+
+  Color3f traceRayRecursive(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, Random &sampler, int depth = 0) const;
   int bounceCount;
   int sampleCount;
   bool useRussianRoulette;
