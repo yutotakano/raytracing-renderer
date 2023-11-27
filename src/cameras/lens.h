@@ -9,7 +9,7 @@
  */
 class Lens : public Camera {
 public:
-  Lens(Vector2f filmSize, Vector3f position, Vector3f lookAt, Vector3f upVector, float fov, float exposure);
+  Lens(Vector2f filmSize, Vector3f position, Vector3f lookAt, Vector3f upVector, float fov, float exposure, float aperture);
   static Lens fromJson(const nlohmann::json &json);
 
   Ray generateRay(Point2f filmPosition, Random &sampler) const override;
@@ -22,6 +22,7 @@ private:
   Vector3f upVector;
   float fov;
   float exposure;
+  float aperture;
 };
 
 #endif // LENS_H
