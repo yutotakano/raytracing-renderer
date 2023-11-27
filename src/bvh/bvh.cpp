@@ -84,10 +84,10 @@ std::shared_ptr<BVHNode> BVH::constructBVHTree(std::vector<std::shared_ptr<BVHNo
 
 std::optional<Intersection> BVH::intersect(const Ray &ray, float minDepth, float maxDepth) const
 {
-  if (root == nullptr)
-  {
-    return std::nullopt;
-  }
-
   return root->intersect(ray, minDepth, maxDepth);
+}
+
+BoundingBox BVH::getBoundingBox() const
+{
+  return root->getBoundingBox();
 }
