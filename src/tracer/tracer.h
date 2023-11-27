@@ -5,6 +5,7 @@
 #include "../vector.h"
 #include "../scene.h"
 #include "../ray.h"
+#include "../random.h"
 
 /**
  * @brief Abstract class representing a ray tracer. This class is responsible
@@ -25,10 +26,10 @@ public:
    * @param ray Camera ray
    * @param minDepth Minimum ray length for intersection checks
    * @param maxDepth Maximum ray length for intersection checks
-   * @param binary Whether to output a single color for intersections (red)
+   * @param sampler Random sampler for any sampling
    * @return Color3f object
    */
-  virtual Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const = 0;
+  virtual Color3f traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, const Random &sampler) const = 0;
 
   /**
    * @brief Get the number of samples per pixel for this tracer.

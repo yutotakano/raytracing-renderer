@@ -3,7 +3,7 @@
 #include "../intersection.h"
 #include "../scene.h"
 
-Path::Path(int bounceCount, int sampleCount) : Tracer(sampleCount), bounceCount(bounceCount)
+Path::Path(int bounceCount, int sampleCount, bool useRussianRoulette) : Tracer(sampleCount), bounceCount(bounceCount), useRussianRoulette(useRussianRoulette)
 {
 }
 
@@ -22,11 +22,17 @@ Path Path::fromJson(const nlohmann::json &json_data)
   {
     sampleCount = json_data["nsamples"];
   }
+
+  bool useRussianRoulette = false;
+  if (json_data.contains("russian_roulette"))
+  {
+    useRussianRoulette = json_data["russian_roulette"];
+  }
   
-  return Path(bounceCount, sampleCount);
+  return Path(bounceCount, sampleCount, useRussianRoulette);
 }
 
-Color3f Path::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const
+Color3f Path::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, const Random &sampler) const
 {
 
 }

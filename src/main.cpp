@@ -12,6 +12,7 @@
 #include "scene.h"
 #include "tracer/tracer.h"
 #include "tonemapper.h"
+#include "random.h"
 
 /**
  * @brief Returns a string with the current time in log-friendly format, followed by a colon and a
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
   std::shared_ptr<Tracer> tracer_ptr = Tracer::fromJson(json_data);
   std::shared_ptr<Camera> camera_ptr = Camera::fromJson(json_data["camera"]);
   Scene scene = Scene::fromJson(json_data["scene"]);
+  Random sampler = Random();
 
   // Create a vector to store the output of the ray tracer.
   // We will pass this to the PPM writer to write to a file, and to the SDL
@@ -55,23 +57,38 @@ int main(int argc, char *argv[])
 
   // Kick off the ray tracer in a new asynchronous thread
   std::future<void> renderAsync = std::async(std::launch::async,
-    [&args, &output, &output_mutex, &quit, &scene, tracer_ptr, camera_ptr]
+    [&args, &output, &output_mutex, &quit, &scene, tracer_ptr, camera_ptr, &sampler]
     {
       // Loop through each pixel in the film
       std::cout << currentTimePrefix() << "Rendering..." << std::endl;
+
       #pragma omp parallel for
       for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
         for (int i = 0; i < camera_ptr->getFilmSize().x(); i++) {
+          // Quit signal sent from UI thread, stop
           if (quit) break;
 
-          // Compute the ray direction for this pixel
-          Ray ray = camera_ptr->generateRay(Point2f(i, j));
+          // Compute the color for this pixel, account for multi-sampling if 
+          // necessary. We start with a black pixel and add the color of each
+          // sample to it.
+          Color3f pixel_color = Color3f(0, 0, 0);
+          // If there's multiple samples, we need to weight each sample to get
+          // the average color
+          float weight = 1.f / tracer_ptr->getSampleCount();
 
-          // Compute the color for this pixel
-          Color3f pixel_color = tracer_ptr->traceRay(scene, ray, 0, 1000);
+          // Loop through each sample and blop it
+          for (int sample = 0; sample < tracer_ptr->getSampleCount(); sample++)
+          {
+            // Compute the ray direction for this pixel, passing Random to
+            // do any random sampling if necessary
+            Ray ray = camera_ptr->generateRay(Point2f(i, j), sampler);
 
-          // Tonemap using the Tonemapper implementation (default is ACES Fitted,
-          // but can be changed via command line arguments)
+            // Trace the ray and add the color to the pixel color, passing Random
+            pixel_color += tracer_ptr->traceRay(scene, ray, 0, 1000, sampler) * weight;
+          }
+
+          // Tonemap to SDR using the Tonemapper implementation (default is ACES
+          // Fitted, but can be changed via command line arguments)
           if (args.tonemap == "linear")
           {
             pixel_color = Tonemapper::tonemapLinear(pixel_color, camera_ptr->getExposure());
@@ -81,12 +98,16 @@ int main(int argc, char *argv[])
             pixel_color = Tonemapper::tonemapACESFitted(pixel_color, camera_ptr->getExposure());
           }
 
-          // Store the color in the output vector
+          // Store the color in the output vector, which we have to lock since
+          // we're reading from UI thread and writing from multiple threads too
           output_mutex.lock();
           output[i + j * camera_ptr->getFilmSize().x()] = pixel_color;
           output_mutex.unlock();
         }
       }
+
+      // We're here (probably stopped above loop early) because of quit signal,
+      // print message so we know what happened
       if (quit)
       {
         std::cout << currentTimePrefix() << "Aborted. Quitting..." << std::endl;

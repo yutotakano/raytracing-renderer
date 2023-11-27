@@ -2,7 +2,6 @@
 #include "../ray.h"
 #include "../intersection.h"
 #include "../scene.h"
-#include <iostream>
 
 Phong::Phong(int bounceCount) : Tracer(1), bounceCount(bounceCount)
 {
@@ -19,7 +18,7 @@ Phong Phong::fromJson(const nlohmann::json &json_data)
   return Phong(bounceCount);
 }
 
-Color3f Phong::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth) const
+Color3f Phong::traceRay(const Scene &scene, const Ray &ray, float minDepth, float maxDepth, const Random &sampler) const
 {
   return traceRayRecursive(scene, ray, minDepth, maxDepth, 0);
 }

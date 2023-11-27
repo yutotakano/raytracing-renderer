@@ -12,7 +12,7 @@ public:
   Pinhole(Vector2f filmSize, Vector3f position, Vector3f lookAt, Vector3f upVector, float fov, float exposure);
   static Pinhole fromJson(const nlohmann::json &json);
 
-  Ray generateRay(Point2f filmPosition) const;
+  Ray generateRay(Point2f filmPosition, const Random &sampler) const override;
 
   float getExposure() const;
 
