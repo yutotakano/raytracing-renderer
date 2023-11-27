@@ -36,8 +36,6 @@ Material Material::fromJson(const nlohmann::json &json_data)
 
 std::tuple<Color3f, float, Vector3f> Material::sample(Vector3f wo, Point2f uv, Random &sampler) const
 {
-  float multiplicationFactor = 1.0f;
-
   if (isReflective)
   {
     float test = sampler.get1D();
@@ -45,11 +43,7 @@ std::tuple<Color3f, float, Vector3f> Material::sample(Vector3f wo, Point2f uv, R
     {
       // Mirror material
       Vector3f wi = Vector3f(-wo.x(), -wo.y(), wo.z());
-      return std::make_tuple(specularColor / test, 0.0f, wi);
-    }
-    else
-    {
-      multiplicationFactor = 1.0f / (1.0f - reflectivity);
+      return std::make_tuple(diffuseColor, 1.0f, wi);
     }
   }
   if (isRefractive)
@@ -67,14 +61,14 @@ std::tuple<Color3f, float, Vector3f> Material::sample(Vector3f wo, Point2f uv, R
     {
       // Total internal reflection
       Vector3f wi = Vector3f(-wo.x(), -wo.y(), wo.z());
-      return std::make_tuple(specularColor * multiplicationFactor, 0.0f, wi);
+      return std::make_tuple(diffuseColor, 0.0f, wi);
     }
     else
     {
       // Refraction
       float cosThetaT = std::sqrt(k);
       Vector3f wi = Vector3f(-eta * wo.x(), -eta * wo.y(), cosThetaT);
-      return std::make_tuple(specularColor * multiplicationFactor, 0.0f, wi);
+      return std::make_tuple(diffuseColor, 0.0f, wi);
     }
   }
 
@@ -98,15 +92,23 @@ std::tuple<Color3f, float, Vector3f> Material::sample(Vector3f wo, Point2f uv, R
 
   Vector3f direction = Vector3f(std::sin(phi) * std::cos(theta), std::sin(phi) * std::sin(theta), std::cos(phi));
 
-  return std::make_tuple(diffuseColor * multiplicationFactor / M_PI, 1.0f / (2.0f * M_PI), direction);
+  return std::make_tuple(diffuseColor / M_PI, 1.0f / (2.0f * M_PI), direction);
 }
 
 std::tuple<Color3f, float> Material::eval(Vector3f wo, Vector3f wi, Point2f uv) const
 {
-  if (isReflective || isRefractive)
+  if (isReflective)
+  {
+    // Mirror material, pdf of 1 if the wi is the perfect reflection of wo.
+    // otherwise 0
+    Vector3f reflected = Vector3f(-wo.x(), -wo.y(), wo.z());
+    float pdf = (wi == reflected) ? 1.0f : 0.0f;
+    return std::make_tuple(specularColor, pdf);
+  }
+  if (isRefractive)
   {
     // Mirror material
-    return std::make_tuple(specularColor, 0.0f);
+    return std::make_tuple(Color3f(0.f, 0.f, 0.f), 0.0f);
   }
   // If the material has a texture, use it to find the diffuse color.
   Color3f diffuseColor = this->diffuseColor;
