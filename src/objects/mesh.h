@@ -4,6 +4,7 @@
 #include "object.h"
 #include "../vector.h"
 #include "triangle.h"
+#include "../bvh/bvh.h"
 
 /**
  * @brief Represents a 3D mesh loaded from an OBJ file.
@@ -20,7 +21,9 @@ public:
 
 private:
   Point3f center;
-  std::vector<Triangle> triangles;
+  std::vector<std::shared_ptr<Object>> triangles;
+
+  std::optional<BVH> bvh;
 };
 
 #endif // MESH_H
