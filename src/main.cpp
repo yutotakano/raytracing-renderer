@@ -1,4 +1,3 @@
-#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <json/json.hpp>
 #include <fstream>
@@ -62,7 +61,7 @@ int main(int argc, char *argv[])
       // Loop through each pixel in the film
       std::cout << currentTimePrefix() << "Rendering..." << std::endl;
 
-      #pragma omp parallel for
+      // #pragma omp parallel for
       for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
         for (int i = 0; i < camera_ptr->getFilmSize().x(); i++) {
           // Quit signal sent from UI thread, stop
@@ -133,116 +132,116 @@ int main(int argc, char *argv[])
     return 0;
   }
 
-  // The window we'll be rendering a live preview to
-  SDL_Window *window = NULL;
+  // // The window we'll be rendering a live preview to
+  // SDL_Window *window = NULL;
 
-  // The surface contained by the window
-  SDL_Surface *screenSurface = NULL;
+  // // The surface contained by the window
+  // SDL_Surface *screenSurface = NULL;
 
-  // Initialize SDL
-  if (SDL_Init(SDL_INIT_VIDEO) < 0)
-  {
-    printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-  }
-  else
-  {
-    // Create window
-    window = SDL_CreateWindow(
-      "Render Preview",
-      SDL_WINDOWPOS_UNDEFINED,
-      SDL_WINDOWPOS_UNDEFINED,
-      camera_ptr->getFilmSize().x(),
-      camera_ptr->getFilmSize().y(),
-      SDL_WINDOW_SHOWN);
-    if (window == NULL)
-    {
-      printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-    }
-    else
-    {
-      // Get window surface
-      screenSurface = SDL_GetWindowSurface(window);
+  // // Initialize SDL
+  // if (SDL_Init(SDL_INIT_VIDEO) < 0)
+  // {
+  //   printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+  // }
+  // else
+  // {
+  //   // Create window
+  //   window = SDL_CreateWindow(
+  //     "Render Preview",
+  //     SDL_WINDOWPOS_UNDEFINED,
+  //     SDL_WINDOWPOS_UNDEFINED,
+  //     camera_ptr->getFilmSize().x(),
+  //     camera_ptr->getFilmSize().y(),
+  //     SDL_WINDOW_SHOWN);
+  //   if (window == NULL)
+  //   {
+  //     printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+  //   }
+  //   else
+  //   {
+  //     // Get window surface
+  //     screenSurface = SDL_GetWindowSurface(window);
 
-      // Fill the surface black
-      SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
+  //     // Fill the surface black
+  //     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 
-      // Update the surface
-      SDL_UpdateWindowSurface(window);
+  //     // Update the surface
+  //     SDL_UpdateWindowSurface(window);
 
-      // Keep the window open and updating until the user closes it
-      SDL_Event e;
+  //     // Keep the window open and updating until the user closes it
+  //     SDL_Event e;
       
-      // Draw to screen at least once (even if render is done). To do this
-      // we keep a flag on the drawing side to indicate if it's done.
-      // We should not set this flag in the async thread because then it
-      // might already be true by this time.
-      bool render_done = false;
+  //     // Draw to screen at least once (even if render is done). To do this
+  //     // we keep a flag on the drawing side to indicate if it's done.
+  //     // We should not set this flag in the async thread because then it
+  //     // might already be true by this time.
+  //     bool render_done = false;
 
-      while (quit == false)
-      {
-        // As long as there are events to process, process it
-        while (SDL_PollEvent(&e))
-        {
-          if (e.type == SDL_QUIT)
-          {
-            quit = true;
-          }
-        }
+  //     while (quit == false)
+  //     {
+  //       // As long as there are events to process, process it
+  //       while (SDL_PollEvent(&e))
+  //       {
+  //         if (e.type == SDL_QUIT)
+  //         {
+  //           quit = true;
+  //         }
+  //       }
 
-        if (render_done == false)
-        {
-          // Acquire the lock on the output vector for this block
-          output_mutex.lock();
+  //       if (render_done == false)
+  //       {
+  //         // Acquire the lock on the output vector for this block
+  //         output_mutex.lock();
 
-          // Display what we have so far to the screen
-          for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
-            for (int i = 0; i < camera_ptr->getFilmSize().x(); i++) {
-              Color3f pixel_color = output[i + j * camera_ptr->getFilmSize().x()];
+  //         // Display what we have so far to the screen
+  //         for (int j = 0; j < camera_ptr->getFilmSize().y(); j++) {
+  //           for (int i = 0; i < camera_ptr->getFilmSize().x(); i++) {
+  //             Color3f pixel_color = output[i + j * camera_ptr->getFilmSize().x()];
 
-              // Convert the pixel color to an SDL-compatible format
-              // which is 32-bit RGBA in LSB-order
-              uint32_t pixel_color_int = (uint32_t) (
-                (255 << 24) +
-                ((int) (pixel_color.x() * 255) << 16) +
-                ((int) (pixel_color.y() * 255) << 8) +
-                ((int) (pixel_color.z() * 255) << 0));
+  //             // Convert the pixel color to an SDL-compatible format
+  //             // which is 32-bit RGBA in LSB-order
+  //             uint32_t pixel_color_int = (uint32_t) (
+  //               (255 << 24) +
+  //               ((int) (pixel_color.x() * 255) << 16) +
+  //               ((int) (pixel_color.y() * 255) << 8) +
+  //               ((int) (pixel_color.z() * 255) << 0));
 
-              // Index into the screen surface's pixel array by bytes
-              uint32_t * const target_pixel = (uint32_t *) (
-                (uint8_t *) screenSurface->pixels +
-                j * screenSurface->pitch +
-                i * screenSurface->format->BytesPerPixel);
-              *target_pixel = pixel_color_int;
-            }
-          }
+  //             // Index into the screen surface's pixel array by bytes
+  //             uint32_t * const target_pixel = (uint32_t *) (
+  //               (uint8_t *) screenSurface->pixels +
+  //               j * screenSurface->pitch +
+  //               i * screenSurface->format->BytesPerPixel);
+  //             *target_pixel = pixel_color_int;
+  //           }
+  //         }
 
-          // Release the lock on the output vector
-          output_mutex.unlock();
+  //         // Release the lock on the output vector
+  //         output_mutex.unlock();
 
-          SDL_UpdateWindowSurface(window);
+  //         SDL_UpdateWindowSurface(window);
           
-          // Only re-draw if we're still rendering. std::future doesn't
-          // have a convenient function for checking if a future is still
-          // running, so we'll check if it's ready (finished) in 0 seconds.
-          if (renderAsync.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
-          {
-            render_done = true;
-          }
-          else
-          {
-              // Sleep for 100ms to avoid hogging the CPU
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-          }
-        };
-      }
-    }
-  }
+  //         // Only re-draw if we're still rendering. std::future doesn't
+  //         // have a convenient function for checking if a future is still
+  //         // running, so we'll check if it's ready (finished) in 0 seconds.
+  //         if (renderAsync.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
+  //         {
+  //           render_done = true;
+  //         }
+  //         else
+  //         {
+  //             // Sleep for 100ms to avoid hogging the CPU
+  //           std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  //         }
+  //       };
+  //     }
+  //   }
+  // }
 
-  // Destroy window
-  SDL_DestroyWindow(window);
+  // // Destroy window
+  // SDL_DestroyWindow(window);
 
-  // Quit SDL subsystems
-  SDL_Quit();
+  // // Quit SDL subsystems
+  // SDL_Quit();
 
-  return 0;
+  // return 0;
 }
