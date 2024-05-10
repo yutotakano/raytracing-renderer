@@ -4,7 +4,7 @@ LDFLAGS = -L/opt/homebrew/lib
 LIBS = -lSDL2
 
 CXX = clang++
-CXXFLAGS = -std=c++17 -Wall -Ofast -fopenmp=libomp 
+CXXFLAGS = -std=c++17 -Wall -Ofast -fopenmp=libomp -march=native
 
 CXX_SRCS := $(shell find src -name "*.cpp")
 CXX_OBJS := ${patsubst src/%.cpp,build/%.o,${CXX_SRCS}}
@@ -13,7 +13,7 @@ CXX_OBJS := ${patsubst src/%.cpp,build/%.o,${CXX_SRCS}}
 
 run: main ../LLM-responses/LLM-responses.json
 
-best: CXXFLAGS += -march=native -g -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize=null -fno-sanitize=alignment
+best: CXXFLAGS += -g -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize=null -fno-sanitize=alignment
 best: main
 
 main: $(CXX_OBJS)
